@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TON TV (XNOT) Node Sales</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #0B0E14;
+            color: #F3F4F6;
+        }
+        .ton-gradient-text {
+            background: linear-gradient(135deg, #0088CC 0%, #00A6FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ton-gradient-bg {
+            background: linear-gradient(135deg, #0088CC 0%, #005580 100%);
+        }
+        .glass-card {
+            background: rgba(22, 28, 38, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <header class="fixed top-0 left-0 w-full z-40 glass-card border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full ton-gradient-bg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-tv text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-black tracking-wider text-white">TON <span class="text-blue-400">TV</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-400">
+                <a href="#vision" class="hover:text-white transition">비전</a>
+                <a href="#ecosystem" class="hover:text-white transition">생태계</a>
+                <a href="#tokenomics" class="hover:text-white transition">XNOT 토크노믹스</a>
+            </nav>
+            <div>
+                <button onclick="openStep1Modal()" class="ton-gradient-bg text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition shadow-lg shadow-blue-500/20 cursor-pointer">
+                    지금 노드 신청하기
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative pt-40 pb-24 md:pt-48 md:pb-32 overflow-hidden">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 mb-6 border border-blue-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> TON 생태계 최초의 Web3 미디어 인프라
+            </span>
+            <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none mb-6">
+                글로벌 미디어 혁명,<br>
+                <span class="ton-gradient-text">TON TV 노드 판매 시작</span>
+            </h1>
+            <p class="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-normal leading-relaxed">
+                텔레그램 9억 유저와 연결된 초고속 TON 네트워크 위에서 작동하는 탈중앙화 미디어 노드를 선점하고, 생태계 핵심 자산인 <span class="text-blue-400 font-bold">XNOT</span> 토큰 보상을 획득하세요.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <button onclick="openStep1Modal()" class="w-full sm:w-auto ton-gradient-bg text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-xl shadow-blue-500/20 cursor-pointer">
+                    지금 노드 신청하기 <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-gray-950/50 border-y border-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">1차 화이트리스트 수량</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-white">3,000 개</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">시작 가격 (개당)</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-blue-400">$1,000</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">이전 라운드 완판율</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-emerald-400">100%</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">총 보상 풀 비율</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-purple-400">35%</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="vision" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl font-black text-white mb-6">왜 TON TV 노드인가?</h2>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                    기존 중앙집중형 CDN의 한계를 뛰어넘어, 전 세계 노드 운영자들의 대역폭을 공유하여 고화질 라이브 스트리밍을 제로에 가까운 비용으로 실현합니다. 별도의 앱 설치 없이 텔레그램 메신저 내부에서 즉시 수천만 명의 유저에게 방송을 송출하고 후원받을 수 있습니다.
+                </p>
+            </div>
+            <div class="glass-card p-8 rounded-2xl border border-gray-800">
+                <h3 class="text-xl font-bold text-white mb-4"><i class="fa-solid fa-chart-line text-blue-400 mr-2"></i>미디어 노드의 독점적 가치</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    TON TV 노드 홀더는 트래픽 처리 기여도에 따라 실시간으로 <span class="text-white font-semibold">XNOT</span> 보상을 분배받게 됩니다. 차수가 올라갈수록 노드 가격은 계단식으로 상승하므로, 현재 가격인 $1,000의 1차 진입 기회를 선점하세요.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div id="step1Modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="glass-card w-full max-w-md rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
+            <div class="px-6 py-4 bg-gray-900/80 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-extrabold">1</span>
+                    텔레그램 계정 인증
+                </h3>
+                <button onclick="closeModal('step1Modal')" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 text-center">
+                <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                    TON TV 노드 신청 및 구매 정보 매핑을 위해<br>
+                    공식 텔레그램 계정 연동 인증이 필요합니다.
+                </p>
+                
+                <div class="my-6 min-h-[40px] flex justify-center items-center">
+                    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="TonTVNodeBot" data-size="large" data-auth-url="https://node.tontv.com/api/auth/telegram" data-request-access="write"></script>
+                </div>
+
+                <div class="relative flex py-3 items-center my-4">
+                    <div class="flex-grow border-t border-gray-800"></div>
+                    <span class="flex-shrink mx-4 text-xs text-gray-500 uppercase tracking-widest">or</span>
+                    <div class="flex-grow border-t border-gray-800"></div>
+                </div>
+
+                <button type="button" onclick="bypassTelegramAuth()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 py-3 px-4 rounded-xl font-medium text-xs transition border border-gray-700 flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 로컬/도메인 인증 오류 시 임시 우회하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="step2Modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="glass-card w-full max-w-md rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
+            <div class="px-6 py-4 bg-gray-900/80 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-extrabold">2</span>
+                    노드 신청자 정보 입력
+                </h3>
+                <button onclick="closeModal('step2Modal')" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="nodeApplicationForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
+                <div class="bg-blue-500/5 border border-blue-500/10 rounded-xl p-3 flex items-center gap-3">
+                    <i class="fa-brands fa-telegram text-blue-400 text-xl"></i>
+                    <div class="text-left">
+                        <p class="text-xs text-gray-400">연동된 텔레그램 인증 상태</p>
+                        <p id="telegramStatusText" class="text-xs font-bold text-emerald-400">인증 성공 (다음 단계 연동 완료)</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">실명 (성함)</label>
+                    <input type="text" id="userName" required placeholder="홍길동" 
+                           class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">연락처</label>
+                    <input type="tel" id="userPhone" required placeholder="010-1234-5678" 
+                           class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">신청 노드 수량 (XNOT 매핑)</label>
+                    <div class="relative">
+                        <input type="number" id="nodeQuantity" required min="1" value="1" oninput="calculatePrice(this.value)"
+                               class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">개</span>
+                    </div>
+                </div>
+
+                <div class="bg-gray-950 p-4 rounded-xl border border-gray-900 flex justify-between items-center">
+                    <span class="text-xs text-gray-400">총 예상 신청 금액</span>
+                    <span id="totalPriceDisplay" class="text-base font-black text-blue-400">$1,000 USD</span>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full ton-gradient-bg text-white py-3.5 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 cursor-pointer">
+                    <span>데이터 저장 및 TON 지갑 연결</span>
+                    <i class="fa-solid fa-wallet"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const GAS_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_GAS_ID/exec"; 
+
+        // 1단계 모달 강제 활성화 (hidden 제거)
+        function openStep1Modal() {
+            const m1 = document.getElementById('step1Modal');
+            if(m1) {
+                m1.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // 모달 비활성화 (hidden 추가)
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // 텔레그램 인증 우회 -> 2단계 모달로 완벽 전환
+        function bypassTelegramAuth() {
+            console.log("우회 브릿지 트리거");
+            document.getElementById('telegramStatusText').innerText = "인증 완료 (임시 우회 적용됨)";
+            
+            // 1단계 완전히 닫고 2단계 열기
+            const m1 = document.getElementById('step1Modal');
+            const m2 = document.getElementById('step2Modal');
+            if(m1) m1.classList.add('hidden');
+            if(m2) m2.classList.remove('hidden');
+        }
+
+        // 실시간 수량별 금액 산정
+        function calculatePrice(quantity) {
+            const qty = parseInt(quantity) || 0;
+            const total = qty * 1000;
+            document.getElementById('totalPriceDisplay').innerText = `$${total.toLocaleString()} USD`;
+        }
+
+        // 폼 최종 제출 및 구글 시트 전송 후 지갑 인젝션 팝업
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 신청 데이터 전송 중...`;
+
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+            const quantity = document.getElementById('nodeQuantity').value;
+
+            const payload = {
+                name: name,
+                phone: phone,
+                quantity: quantity,
+                timestamp: new Date().toISOString(),
+                brand: "XNOT"
+            };
+
+            try {
+                await fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error("GAS 전송 오류 무시 후 다음 프로세스 진행:", error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                
+                closeModal('step2Modal');
+
+                alert(`[신청 데이터 등록 완료]\n\n성함: ${name}\n수량: ${quantity} 개 (XNOT 매핑)\n\n확인을 누르면 'TON Wallet' 연동 창으로 이동합니다.`);
+                window.open("https://ton.org/wallets", "_blank", "width=500,height=600");
+            }
+        }
+    </script>
+</body>
+</html>

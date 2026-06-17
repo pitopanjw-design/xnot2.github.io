@@ -308,87 +308,95 @@
         }
 
         // [★렌더링 전면 개조] 고해상도 모바일 주사율 동기화 포물선+원근 엔진
-        function animateSkipping(total) {
-            const startYPosition = window.innerHeight * 0.8; 
-            const horizonY = window.innerHeight * 0.35;       
-            const totalDistanceY = startYPosition - horizonY;
-            
-            let currentBounce = 0;
-            let stepStartTime = performance.now(); // 시간 누락 방지용 고해상도 타임스탬프
+      // [★대표님 직관 기획 반영] 비선형 원근 가속 및 템포 압축 엔진
+function animateSkipping(total) {
+    const startYPosition = window.innerHeight * 0.8; // 시작점 (1/5 지점)
+    const horizonY = window.innerHeight * 0.35;       // 한계선 (3.5/5 지점)
+    const totalDistanceY = startYPosition - horizonY;
+    
+    let currentBounce = 0;
+    let stepStartTime = performance.now();
 
-            // 첫 번째 포인트 강제 트리거
-            createBounceEffect(window.innerWidth / 2, startYPosition, 1);
+    // 첫 번째 바운스 수면 이펙트 즉시 생성
+    createBounceEffect(window.innerWidth / 2, startYPosition, 1);
 
-            function frameLoop(timestamp) {
-                // V3.0의 점점 촘촘해지는 타이밍 공식을 프레임 기반 동기화
-                const stepDuration = 120 + ((currentBounce / total) * 120);
-                let progressInStep = (timestamp - stepStartTime) / stepDuration;
-                
-                if (progressInStep > 1) progressInStep = 1;
+    function frameLoop(timestamp) {
+        // [규칙 2 반영] 튕기는 템포의 변화: progress가 커질수록 stepDuration이 급격히 짧아짐 (천천히 -> 점점 빠르게 다다닥)
+        const progress = currentBounce / total;
+        const stepDuration = 250 * Math.pow(1 - (progress * 0.6), 2); // 초반엔 250ms로 천천히, 후반엔 40ms로 초고속 튕김
+        
+        let progressInStep = (timestamp - stepStartTime) / stepDuration;
+        if (progressInStep > 1) progressInStep = 1;
 
-                // 1. 수면 위를 미끄러지듯 나아가는 전진축 연산
-                const currentBounceProgress = (currentBounce + progressInStep) / total;
-                const surfaceY = startYPosition - (totalDistanceY * Math.pow(currentBounceProgress, 0.65));
-                const currentX = window.innerWidth / 2;
+        // 현재 전체 누적 진행도 (0.0 ~ 1.0)
+        const totalProgress = Math.min((currentBounce + progressInStep) / total, 1);
 
-                // 2. [★원근감] 멀어질수록 무조건 scale(1.0)에서 소실점 scale(0.35)로 실시간 축소
-                const scale = 1 - (currentBounceProgress * 0.65);
+        // [규칙 3 반영] 크기 변화의 가속: Math.pow(..., 2)를 주어 초반엔 천천히 작아지다가 소실점 근처에서 '확' 작아짐
+        const scaleProgress = Math.pow(totalProgress, 2);
+        const scale = 1 - (scaleProgress * 0.65); // 1.0에서 출발해 최종 0.35까지 축소
 
-                // 3. [★통통 포물선] 뒤로 갈수록 튕김 높이가 감쇄하는 진짜 도약 곡선 연산
-                const maxJumpHeight = 100 * Math.pow(1 - (currentBounce / total), 0.6);
-                const jumpOffset = Math.sin(progressInStep * Math.PI) * maxJumpHeight;
-                
-                // 최종 돌의 화면 배치 Y축 = 수면 높이 - 점프 높이
-                const stoneRenderY = surfaceY - jumpOffset;
+        // 앞으로 전진하는 기저면(수면) Y 좌표 (원근감 반영)
+        const surfaceY = startYPosition - (totalDistanceY * Math.pow(totalProgress, 0.65));
+        const currentX = window.innerWidth / 2;
 
-                // [★동기화 전송] 위치와 원근 크기를 묶어 GPU에 직통으로 투사 (끼긱거림 원천 차단)
-                ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
-                ingameStoneEl.style.left = `${currentX}px`;
-                ingameStoneEl.style.top = `${stoneRenderY}px`;
+        // [규칙 1 반영] 위아래 튕김의 폭 변화: 후반으로 갈수록 maxJumpHeight가 급격히 줄어듦 (높게 -> 점점 조금씩)
+        const maxJumpHeight = 120 * Math.pow(1 - totalProgress, 1.5); 
+        const jumpOffset = Math.sin(progressInStep * Math.PI) * maxJumpHeight;
+        
+        // 최종 돌의 가시적 위치 = 수면 전진 위치 - 위아래 점프 높이
+        const stoneRenderY = surfaceY - jumpOffset;
 
-                // 하나의 스텝이 끝나 수면에 탁 닿는 칼타이밍 순간
-                if (progressInStep >= 1) {
-                    currentBounce++;
-                    stepStartTime = timestamp;
+        // GPU 실시간 투사
+        ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        ingameStoneEl.style.left = `${currentX}px`;
+        ingameStoneEl.style.top = `${stoneRenderY}px`;
 
-                    if (currentBounce < total) {
-                        // 정확히 수면 좌표(surfaceY) 자리에 동심원 파동 생성
-                        createBounceEffect(currentX, surfaceY, currentBounce + 1);
-                        scoreDisplay.innerText = `${currentBounce + 1} SKIPS`;
-                        if(navigator.vibrate) navigator.vibrate(15);
-                    }
-                }
+        // 한 번의 바운스가 끝나 수면에 닿는 타이밍
+        if (progressInStep >= 1) {
+            currentBounce++;
+            stepStartTime = timestamp;
 
-                // 바운스가 남아있다면 프레임 루프 연속 구동
-                if (currentBounce < total) {
-                    requestAnimationFrame(frameLoop);
-                } else {
-                    // 모든 에너지가 소진되면 그 정착지에서 물속으로 스르륵 가라앉기 마감
-                    ingameStoneEl.style.transition = "opacity 0.6s ease-out, top 0.6s ease-out";
-                    ingameStoneEl.style.top = `${surfaceY + 40}px`;
-                    ingameStoneEl.style.opacity = '0';
-
-                    const minedSP = total * 1000;
-                    playerSP += minedSP;
-                    updateAssetUI();
-                    
-                    message.innerText = `🎉 +${minedSP.toLocaleString()} SP 채굴 완료!`;
-                    
-                    setTimeout(() => {
-                        document.querySelectorAll('.bounce-point').forEach(p => p.remove());
-                        ingameStoneEl.style.transition = "none"; 
-                        ingameStoneEl.style.display = 'none';
-                        
-                        stoneDisplayName.innerText = "돌 뽑기 터치!";
-                        stoneDesc.innerText = "다음 기회를 위해 돌을 다시 뽑으세요.";
-                        mainBtn.innerText = "SPIN WHEEL";
-                        
-                        currentStatus = "PRE_SPIN";
-                        rouletteScreen.style.display = 'flex';
-                        updateAssetUI();
-                    }, 1800);
-                }
+            if (currentBounce < total) {
+                // 수면에 닿았을 때만 정확하게 물보라 동심원과 숫자 투하
+                createBounceEffect(currentX, surfaceY, currentBounce + 1);
+                scoreDisplay.innerText = `${currentBounce + 1} SKIPS`;
+                if(navigator.vibrate) navigator.vibrate(15);
             }
+        }
+
+        // 루프 제어
+        if (currentBounce < total) {
+            requestAnimationFrame(frameLoop);
+        } else {
+            // 에너지가 다하면 그 자리에서 수면 아래로 하강하며 퇴장
+            ingameStoneEl.style.transition = "opacity 0.6s ease-out, top 0.6s ease-out";
+            ingameStoneEl.style.top = `${surfaceY + 40}px`;
+            ingameStoneEl.style.opacity = '0';
+
+            const minedSP = total * 1000;
+            playerSP += minedSP;
+            updateAssetUI();
+            
+            message.innerText = `🎉 +${minedSP.toLocaleString()} SP 채굴 완료!`;
+            
+            setTimeout(() => {
+                document.querySelectorAll('.bounce-point').forEach(p => p.remove());
+                ingameStoneEl.style.transition = "none"; 
+                ingameStoneEl.style.display = 'none';
+                
+                stoneDisplayName.innerText = "돌 뽑기 터치!";
+                stoneDesc.innerText = "다음 기회를 위해 돌을 다시 뽑으세요.";
+                mainBtn.innerText = "SPIN WHEEL";
+                
+                currentStatus = "PRE_SPIN";
+                rouletteScreen.style.display = 'flex';
+                updateAssetUI();
+            }, 1800);
+        }
+    }
+
+    requestAnimationFrame(frameLoop);
+}
 
             // 고해상도 루프 기동
             requestAnimationFrame(frameLoop);

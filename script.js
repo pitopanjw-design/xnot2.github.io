@@ -184,42 +184,46 @@ function launchStone(speed) {
     animateSkipping(totalBounces);
 }
 
-// [★완공] 대표님의 착시 가속 연출 공식 100% 매핑 엔진
+// [★대표님 시그니처 템포 매핑] 토오옹통 -> 토옹통 -> 통통통통 다다닥 엔진
 function animateSkipping(total) {
-    const startYPosition = window.innerHeight * 0.8; 
-    const horizonY = window.innerHeight * 0.35;       
+    const startYPosition = window.innerHeight * 0.8; // 시작점 (1/5 지점)
+    const horizonY = window.innerHeight * 0.35;       // 한계선 (3.5/5 지점)
     const totalDistanceY = startYPosition - horizonY;
     
     let currentBounce = 0;
     let stepStartTime = performance.now();
 
-    // 첫 튕김 즉시 생성
+    // 첫 번째 포인트 즉시 생성
     createBounceEffect(window.innerWidth / 2, startYPosition, 1, selectedStone.rippleColor);
 
     function frameLoop(timestamp) {
-        // [대표님 규칙] 튕김 템포의 변화 (초반 천천히 -> 후반 다다다닥 압축)
+        // 현재 전체 바운스 진행도 (0.0 ~ 1.0)
         const progress = currentBounce / total;
-        const stepDuration = 260 * Math.pow(1 - (progress * 0.65), 2); 
+        
+        // [★핵심 수정: 대표님의 "토오옹통~통" 호흡 구현]
+        // 지수 함수와 거듭제곱을 결합하여, 초반 1~2회차는 380ms(엄청나게 길게 머무름)로 시작하고,
+        // 중반을 지나 후반부로 갈수록 35ms(초고속 다다닥)까지 박자가 극적으로 압축되도록 설계했습니다.
+        const stepDuration = 380 * Math.pow(1 - progress, 2.5) + 35;
         
         let progressInStep = (timestamp - stepStartTime) / stepDuration;
         if (progressInStep > 1) progressInStep = 1;
 
         const totalProgress = Math.min((currentBounce + progressInStep) / total, 1);
 
-        // [대표님 규칙] 크기 변화 가속 (소실점 근처에서 원근감 극대화 축소)
+        // [원근감] 크기 변화 가속 곡선 (소실점 근처에서 순간 압축 축소)
         const scaleProgress = Math.pow(totalProgress, 2);
         const scale = 1 - (scaleProgress * 0.65); 
 
         const surfaceY = startYPosition - (totalDistanceY * Math.pow(totalProgress, 0.65));
         const currentX = window.innerWidth / 2;
 
-        // [대표님 규칙] 위아래 점프 높이 변화 (에너지 방전으로 점차 낮아짐)
-        const maxJumpHeight = 130 * Math.pow(1 - totalProgress, 1.4); 
+        // [포물선] 위아래 튕김 폭 감쇄 (박자가 빨라질수록 높이도 급격하게 바닥에 붙음)
+        const maxJumpHeight = 140 * Math.pow(1 - totalProgress, 1.8); 
         const jumpOffset = Math.sin(progressInStep * Math.PI) * maxJumpHeight;
         
         const stoneRenderY = surfaceY - jumpOffset;
 
-        // 최종 하드웨어 가속 투사
+        // GPU 실시간 좌표 투사
         ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
         ingameStoneEl.style.left = `${currentX}px`;
         ingameStoneEl.style.top = `${stoneRenderY}px`;
@@ -229,7 +233,6 @@ function animateSkipping(total) {
             stepStartTime = timestamp;
 
             if (currentBounce < total) {
-                // 정확히 수면에 닿을 때 뽑힌 스킨의 고유 칼라 파동(selectedStone.rippleColor)을 생성
                 createBounceEffect(currentX, surfaceY, currentBounce + 1, selectedStone.rippleColor);
                 scoreDisplay.innerText = `${currentBounce + 1} SKIPS`;
                 if(navigator.vibrate) navigator.vibrate(15);

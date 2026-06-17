@@ -117,19 +117,18 @@ const handleMainBtn = (e) => {
         playerHearts--; 
         updateAssetUI();
 
-        // 룰렛 창이 닫히기 직전, 인게임 백그라운드에 랜덤 배경을 주입 (레이어 격리로 안전하게 처리)
+        // 1. 룰렛 화면을 끄기 전에 인게임 컨테이너 배경에 무작위 스테이지를 쾅 박아넣습니다.
         const randomBg = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
-        if (container) container.style.backgroundImage = `url('${randomBg}')`;
+        container.style.backgroundImage = `url('${randomBg}')`;
 
-        if (rouletteScreen) rouletteScreen.style.display = 'none'; 
+        // 2. 부모 컨테이너가 정상적으로 배경을 인지한 뒤에 룰렛 스크린을 걷어냅니다.
+        rouletteScreen.style.display = 'none'; 
         
-        if (ingameStoneEl) {
-            ingameStoneEl.style.left = '50%';
-            ingameStoneEl.style.top = '80%';
-            ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
-            ingameStoneEl.style.opacity = '1';
-            ingameStoneEl.style.display = 'block';
-        }
+        ingameStoneEl.style.left = '50%';
+        ingameStoneEl.style.top = '80%';
+        ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
+        ingameStoneEl.style.opacity = '1';
+        ingameStoneEl.style.display = 'block';
         
         document.getElementById('swipe-guide').style.display = 'block';
         scoreDisplay.innerText = "0 SKIPS";
@@ -276,7 +275,9 @@ function animateSkipping(total) {
                 
                 currentStatus = "PRE_SPIN";
                 
-                // [근본 영점 고정] 부모 컨테이너 배경을 건드리지 않고, 룰렛 스크린 레이어만 다시 켭니다.
+                // [근본 해결] 복귀하는 순간 컨테이너의 인라인 배경 스타일을 리셋하여 
+                // CSS 파일에 정의된 본래의 bg_roulette.png가 즉시 표출되도록 강제 연동합니다.
+                container.style.backgroundImage = ""; 
                 rouletteScreen.style.display = 'flex';
                 
                 updateAssetUI();

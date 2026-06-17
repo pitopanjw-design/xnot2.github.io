@@ -83,11 +83,11 @@ body, html {
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
-    background-image: url('images/bg_roulette.png'); 
+    background-image: url('images/bg_roulette.png') !important; /* !important를 주어 JS의 엉뚱한 간섭을 원천 차단 */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    z-index: 1000; /* 인게임 컨테이너 배경보다 무조건 위로 배치 */
+    z-index: 9999; /* 인게임의 그 어떤 블랙아웃 레이어도 뚫고 올라오지 못하게 최상위 락 */
     display: flex; 
     flex-direction: column; 
     align-items: center; 

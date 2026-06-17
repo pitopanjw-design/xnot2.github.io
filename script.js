@@ -1,14 +1,17 @@
+// [★대표님 직관 반영] 성능 왜곡 전면 폐기 -> 오직 외형 스킨 컬렉션 데이터셋으로 재조립
 const stones = [
-    { name: "평범한 조약돌", image: "images/stone_ordinary.png", mult: 1.0, luck: 0.1, desc: "표준 성능의 무난한 기본 조약돌" },
-    { name: "거친 현무암", image: "images/stone_rare.png", mult: 0.6, luck: 0.6, desc: "낮은 확률이지만 대박나면 대량 채굴 가능한 도박성 돌" },
-    { name: "슬레이트 판암", image: "images/stone_legendary.png", mult: 1.5, luck: 0.05, desc: "안정적인 각도로 평균 튕김 수가 매우 높음 (효율형)" },
-    { name: "황금빛 운석", image: "images/stone_mythic.png", mult: 2.5, luck: 0.8, desc: "신화급 확률로 수평선을 뚫는 극대량 채굴석" }
+    { id: "ordinary", name: "평범한 조약돌", image: "images/stone_ordinary.png", rippleColor: "rgba(255,255,255,0.8)", desc: "강가에서 흔히 볼 수 있는 친숙한 기본 조약돌" },
+    { id: "rare", name: "거친 현무암", image: "images/stone_rare.png", rippleColor: "rgba(0,191,255,0.9)", desc: "수면에 닿을 때마다 푸른 이온 스파크 파동이 터지는 돌" },
+    { id: "legendary", name: "슬레이트 판암", image: "images/stone_legendary.png", rippleColor: "rgba(239,68,68,0.9)", desc: "붉은 마그마 광용 파동을 일으키는 얇고 날카로운 암석" },
+    { id: "mythic", name: "XNOT 황금 운석", image: "images/stone_mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
 ];
 
+// 유저 자산 및 컬렉션 상태 데이터
 let playerHearts = 5;
 let playerSP = 0;
+let unlockedSkins = ["ordinary"]; // 유저가 뽑아서 해금한 스킨 리스트 (기본 돌만 보유 시작)
 
-let selectedStone = null;
+let selectedStone = stones[0]; // 최초 기본 돌 세팅
 let isSpinning = false;
 let startY = 0;
 let startTime = 0;
@@ -30,6 +33,7 @@ const spCountEl = document.getElementById('sp-count');
 const youtubeModal = document.getElementById('youtube-modal');
 const videoTimerEl = document.getElementById('video-timer');
 
+// [하트 가드레일] 최대치 5개 고정 수사권 방어
 function updateAssetUI() {
     heartsCountEl.innerText = playerHearts;
     spCountEl.innerText = playerSP.toLocaleString();
@@ -42,6 +46,7 @@ function updateAssetUI() {
     }
 }
 
+// 룰렛 가챠 구동 (성능 배율 제거, 오직 스킨 획득 도파민에 집중)
 function triggerWheel(e) {
     if (e) e.preventDefault();
     if (playerHearts <= 0) {
@@ -64,11 +69,19 @@ function triggerWheel(e) {
             clearInterval(timer);
             selectedStone = current;
             wheelEl.style.transform = `rotate(0deg)`; 
-            stoneDisplayName.innerText = selectedStone.name;
             
+            // 신규 스킨 획득 시 팝업 텍스트 연출 전환
+            if (!unlockedSkins.includes(selectedStone.id)) {
+                unlockedSkins.push(selectedStone.id);
+                stoneDisplayName.innerText = `🎉 신규 스킨! ${selectedStone.name}`;
+            } else {
+                stoneDisplayName.innerText = `${selectedStone.name} (보유 중)`;
+            }
+            
+            // 뽑힌 스킨 이미지를 인게임 돌 패널에 바인딩
             ingameStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
             
-            document.getElementById('roulette-title').innerText = "STONE READY!";
+            document.getElementById('roulette-title').innerText = "SKIN READY!";
             mainBtn.innerText = "LAUNCH STONE (❤️ 1 소모)";
             mainBtn.style.background = "#deff9a";
             mainBtn.style.color = "#0f172a";
@@ -163,18 +176,15 @@ function launchStone(speed) {
     isPlaying = false;
     document.getElementById('swipe-guide').style.display = 'none';
     
-    let totalBounces = Math.floor(speed * 9 * selectedStone.mult);
-    if(Math.random() < selectedStone.luck) {
-        totalBounces = Math.floor(totalBounces * 2.2);
-        message.innerText = "⚡ CRITICAL LUCKY HIT! ⚡";
-    } else {
-        message.innerText = "NICE SHOT!";
-    }
+    // 순수한 유저의 피지컬 속도로만 최종 바운스 계산 (공평한 토크노믹스 방어)
+    let totalBounces = Math.floor(speed * 10);
+    message.innerText = "GOOOOAL!";
     if(totalBounces < 3) totalBounces = 3; 
 
     animateSkipping(totalBounces);
 }
 
+// [★완공] 대표님의 착시 가속 연출 공식 100% 매핑 엔진
 function animateSkipping(total) {
     const startYPosition = window.innerHeight * 0.8; 
     const horizonY = window.innerHeight * 0.35;       
@@ -183,31 +193,33 @@ function animateSkipping(total) {
     let currentBounce = 0;
     let stepStartTime = performance.now();
 
-    createBounceEffect(window.innerWidth / 2, startYPosition, 1);
+    // 첫 튕김 즉시 생성
+    createBounceEffect(window.innerWidth / 2, startYPosition, 1, selectedStone.rippleColor);
 
     function frameLoop(timestamp) {
-        // [대표님 기획] 튕김 템포 변화식 (천천히 -> 점점 다다닥)
+        // [대표님 규칙] 튕김 템포의 변화 (초반 천천히 -> 후반 다다다닥 압축)
         const progress = currentBounce / total;
-        const stepDuration = 250 * Math.pow(1 - (progress * 0.6), 2); 
+        const stepDuration = 260 * Math.pow(1 - (progress * 0.65), 2); 
         
         let progressInStep = (timestamp - stepStartTime) / stepDuration;
         if (progressInStep > 1) progressInStep = 1;
 
         const totalProgress = Math.min((currentBounce + progressInStep) / total, 1);
 
-        // [대표님 기획] 크기 변화 가속 곡선 (소실점에서 순간 압축 축소)
+        // [대표님 규칙] 크기 변화 가속 (소실점 근처에서 원근감 극대화 축소)
         const scaleProgress = Math.pow(totalProgress, 2);
         const scale = 1 - (scaleProgress * 0.65); 
 
         const surfaceY = startYPosition - (totalDistanceY * Math.pow(totalProgress, 0.65));
         const currentX = window.innerWidth / 2;
 
-        // [대표님 기획] 위아래 튕김 폭 감쇄 포물선
-        const maxJumpHeight = 120 * Math.pow(1 - totalProgress, 1.5); 
+        // [대표님 규칙] 위아래 점프 높이 변화 (에너지 방전으로 점차 낮아짐)
+        const maxJumpHeight = 130 * Math.pow(1 - totalProgress, 1.4); 
         const jumpOffset = Math.sin(progressInStep * Math.PI) * maxJumpHeight;
         
         const stoneRenderY = surfaceY - jumpOffset;
 
+        // 최종 하드웨어 가속 투사
         ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
         ingameStoneEl.style.left = `${currentX}px`;
         ingameStoneEl.style.top = `${stoneRenderY}px`;
@@ -217,7 +229,8 @@ function animateSkipping(total) {
             stepStartTime = timestamp;
 
             if (currentBounce < total) {
-                createBounceEffect(currentX, surfaceY, currentBounce + 1);
+                // 정확히 수면에 닿을 때 뽑힌 스킨의 고유 칼라 파동(selectedStone.rippleColor)을 생성
+                createBounceEffect(currentX, surfaceY, currentBounce + 1, selectedStone.rippleColor);
                 scoreDisplay.innerText = `${currentBounce + 1} SKIPS`;
                 if(navigator.vibrate) navigator.vibrate(15);
             }
@@ -226,7 +239,7 @@ function animateSkipping(total) {
         if (currentBounce < total) {
             requestAnimationFrame(frameLoop);
         } else {
-            // 깔끔한 침몰 처리
+            // 깔끔한 침몰 처리 마감
             ingameStoneEl.style.transition = "opacity 0.6s ease-out, top 0.6s ease-out";
             ingameStoneEl.style.top = `${surfaceY + 40}px`;
             ingameStoneEl.style.opacity = '0';
@@ -256,7 +269,7 @@ function animateSkipping(total) {
     requestAnimationFrame(frameLoop);
 }
 
-function createBounceEffect(x, y, count) {
+function createBounceEffect(x, y, count, color) {
     const point = document.createElement('div');
     point.className = 'bounce-point';
     point.style.left = `${x}px`;
@@ -268,6 +281,8 @@ function createBounceEffect(x, y, count) {
     rip.className = 'ripple';
     rip.style.left = `${x}px`;
     rip.style.top = `${y}px`;
+    // 각 스킨의 전용 파동 색상 강제 입히기
+    rip.style.borderColor = color;
     container.appendChild(rip);
 }
 

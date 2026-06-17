@@ -6,6 +6,14 @@ const stones = [
     { id: "mythic", name: "XNOT 황금 운석", image: "images/stone_mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
 ];
 
+// [★대표님 지시] 돌 종류와 무관하게 완전히 무작위로 바뀔 게임 배경 이미지 리스트
+const gameBackgrounds = [
+    "images/bg_stage_1.png", // 기본 강가
+    "images/bg_stage_2.png", // 신비로운 호수 (추가 예정 자산명)
+    "images/bg_stage_3.png", // 밤의 계곡 (추가 예정 자산명)
+    "images/bg_stage_4.png"  /* 대표님이 가지고 계신 추가 배경 파일명들을 여기에 넣으시면 됩니다 */
+];
+
 // 유저 자산 및 컬렉션 상태 데이터
 let playerHearts = 5;
 let playerSP = 0;
@@ -106,6 +114,10 @@ const handleMainBtn = (e) => {
     } else if (currentStatus === "SPIN_DONE") {
         playerHearts--; 
         updateAssetUI();
+
+        // [★완공] 대표님 지시: 던지기 화면으로 넘어갈 때 돌과 상관없이 무작위 배경 선택 주입
+        const randomBg = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
+        container.style.backgroundImage = `url('${randomBg}')`;
 
         rouletteScreen.style.display = 'none'; 
         

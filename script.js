@@ -267,10 +267,8 @@ function animateSkipping(total) {
             
             setTimeout(() => {
                 document.querySelectorAll('.bounce-point').forEach(p => p.remove());
-                if (ingameStoneEl) {
-                    ingameStoneEl.style.transition = "none"; 
-                    ingameStoneEl.style.display = 'none';
-                }
+                ingameStoneEl.style.transition = "none"; 
+                ingameStoneEl.style.display = 'none';
                 
                 stoneDisplayName.innerText = "돌 뽑기 터치!";
                 stoneDesc.innerText = "다음 기회를 위해 돌을 다시 뽑으세요.";
@@ -278,9 +276,9 @@ function animateSkipping(total) {
                 
                 currentStatus = "PRE_SPIN";
                 
-                // [근본 해결] 인게임 정산 후 자바스크립트가 배경을 "none"으로 날리던 코드를 영구 삭제. 
-                // 단순히 룰렛 레이어를 다시 켜는 것으로 마감하여 하위 인게임 배경과 상위 대장간 배경이 철저히 독립 유지됨.
-                if (rouletteScreen) rouletteScreen.style.display = 'flex';
+                // [근본 영점 고정] 부모 컨테이너 배경을 건드리지 않고, 룰렛 스크린 레이어만 다시 켭니다.
+                rouletteScreen.style.display = 'flex';
+                
                 updateAssetUI();
             }, 1800);
         }

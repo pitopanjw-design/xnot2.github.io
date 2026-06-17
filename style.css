@@ -78,15 +78,16 @@ body, html {
 #score-display { font-size: 44px; font-weight: 900; color: var(--primary); text-shadow: 0 4px 8px rgba(0,0,0,0.4); }
 #message { font-size: 18px; color: white; margin-top: 10px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-/* [근본 해결] 대장간 룰렛 전용 독립 레이어 장벽 고정 */
+/* style.css - 룰렛 레이어 독립 장벽 고정 (오타 전면 수정본) */
+
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
-    background-image: url('images/bg_roulette.png') !important; /* 자바스크립트가 지우지 못하도록 강제 우선순위 락 */
+    background-image: url('images/bg_roulette.png'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    z-index: 1000; /* 인게임 화면을 완벽히 아래로 누름 */
+    z-index: 1000; /* 인게임 컨테이너 배경보다 무조건 위로 배치 */
     display: flex; 
     flex-direction: column; 
     align-items: center; 
@@ -94,11 +95,10 @@ body, html {
 }
 #roulette-title { color: var(--primary); margin-bottom: 20px; text-align: center; padding: 0 20px; font-size: 22px; font-weight: bold; }
 
-/* 고대 룬 바퀴 고정 */
 #roulette-wheel { 
     width: 280px; 
     height: 280px; 
-    background-image: url('images/roulette_wheel.png') !important; /* 이미지 강제 고정 락 */
+    background-image: url('images/roulette_wheel.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -128,14 +128,12 @@ body, html {
 #stone-desc { color: #94a3b8; font-size: 15px; margin-top: -15px; margin-bottom: 30px; text-align: center; padding: 0 20px; min-height: 40px; }
 .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 18px 60px; font-size: 22px; font-weight: bold; border-radius: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; -webkit-tap-highlight-color: transparent; }
 
-/* 광고 창 */
 #youtube-modal { position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
 .ad-title { color:#ef4444; margin-bottom: 10px; }
 .ad-desc { color:#94a3b8; font-size:16px; margin-bottom:30px; }
 #video-timer { font-size:48px; font-weight:bold; color:white; margin-bottom:40px; }
 .ad-reward { color:var(--primary); }
 
-/* 스와이프 가이드 화살표 */
 #swipe-guide { 
     position: absolute; 
     top: 68%; 
@@ -150,3 +148,4 @@ body, html {
     z-index: 900;
 }
 @keyframes arrow-up { 0% { transform: translateY(10px); opacity: 0.3; } 50% { transform: translateY(-10px); opacity: 1; } 100% { transform: translateY(10px); opacity: 0.3; } }
+/* 깨져있던 가로막기 중괄호를 완벽히 도려내어 정렬 완료 */

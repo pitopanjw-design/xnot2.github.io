@@ -1,0 +1,111 @@
+:root { 
+    --primary: #deff9a; 
+    --bg: #0f172a; 
+    --danger: #ef4444; 
+}
+
+body, html { 
+    margin: 0; 
+    padding: 0; 
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden; 
+    font-family: sans-serif; 
+    background: var(--bg); 
+    color: white; 
+    user-select: none; 
+    -webkit-user-select: none; 
+}
+
+#game-container { 
+    position: relative; 
+    width: 100%; 
+    height: 100%; 
+    background-image: url('images/bg_stage_1.png');
+    background-size: cover;
+    background-position: center;
+    background-color: #0284c7; 
+    overflow: hidden; 
+}
+
+/* 자산 정보 표시 */
+.asset-bar { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 200; pointer-events: none; }
+.asset-box { background: rgba(15, 23, 42, 0.8); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+#hearts-count { color: var(--danger); }
+#sp-count { color: var(--primary); }
+
+/* 수면 이펙트 */
+.bounce-point {
+    position: absolute; width: 35px; height: 18px;
+    background: rgba(255, 255, 255, 0.7); border-radius: 50%;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: bold; color: #0284c7;
+    z-index: 50; box-shadow: 0 0 8px white;
+}
+.ripple {
+    position: absolute; border: 3px solid rgba(255,255,255,0.8); border-radius: 50%;
+    transform: translate(-50%, -50%); pointer-events: none;
+    animation: ripple-out 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    z-index: 40;
+}
+@keyframes ripple-out {
+    from { width: 10px; height: 5px; opacity: 1; }
+    to { width: 180px; height: 90px; opacity: 0; }
+}
+
+/* 인게임 전용 독립형 돌 (GPU 가속 락 세팅) */
+#ingame-stone {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 90px; 
+    height: 60px;
+    background-color: #555; 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+    z-index: 999; 
+    display: none; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    will-change: transform, top, left;
+    transform-origin: center center;
+}
+
+/* 안내 UI */
+.ui-layer { position: absolute; top: 90px; left: 0; width: 100%; text-align: center; pointer-events: none; z-index: 150; }
+#score-display { font-size: 44px; font-weight: 900; color: var(--primary); text-shadow: 0 4px 8px rgba(0,0,0,0.4); }
+#message { font-size: 18px; color: white; margin-top: 10px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+/* 룰렛 화면 패널 */
+#roulette-screen { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#roulette-title { color: var(--primary); margin-bottom: 20px; text-align: center; padding: 0 20px; font-size: 22px; font-weight: bold; }
+.wheel-container { width: 240px; height: 240px; border: 8px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; background: #1e293b; box-shadow: 0 0 30px rgba(222,255,154,0.3); -webkit-tap-highlight-color: transparent; }
+.pointer { position: absolute; top: -20px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ef4444; z-index: 1100; }
+#stone-display-name { font-size: 24px; font-weight: bold; color: white; text-align: center; padding: 10px; pointer-events: none; }
+#stone-desc { color: #94a3b8; font-size: 15px; margin-top: -15px; margin-bottom: 30px; text-align: center; padding: 0 20px; min-height: 40px; }
+.action-btn { background: var(--primary); color: #0f172a; border: none; padding: 18px 60px; font-size: 22px; font-weight: bold; border-radius: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; -webkit-tap-highlight-color: transparent; }
+
+/* 광고 창 */
+#youtube-modal { position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+.ad-title { color:#ef4444; margin-bottom: 10px; }
+.ad-desc { color:#94a3b8; font-size:16px; margin-bottom:30px; }
+#video-timer { font-size:48px; font-weight:bold; color:white; margin-bottom:40px; }
+.ad-reward { color:var(--primary); }
+
+/* 스와이프 가이드 화살표 */
+#swipe-guide { 
+    position: absolute; 
+    top: 68%; 
+    width: 100%; 
+    text-align: center; 
+    color: var(--primary); 
+    font-size: 20px; 
+    font-weight: bold; 
+    animation: arrow-up 1.2s infinite; 
+    pointer-events: none; 
+    display: none; 
+    z-index: 900;
+}
+@keyframes arrow-up { 0% { transform: translateY(10px); opacity: 0.3; } 50% { transform: translateY(-10px); opacity: 1; } 100% { transform: translateY(10px); opacity: 0.3; } }

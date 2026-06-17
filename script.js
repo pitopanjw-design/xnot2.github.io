@@ -1,4 +1,3 @@
-// [★대표님 직관 반영] 성능 왜곡 전면 폐기 -> 오직 외형 스킨 컬렉션 데이터셋으로 재조립
 const stones = [
     { id: "ordinary", name: "평범한 조약돌", image: "images/stone_ordinary.png", rippleColor: "rgba(255,255,255,0.8)", desc: "강가에서 흔히 볼 수 있는 친숙한 기본 조약돌" },
     { id: "rare", name: "거친 현무암", image: "images/stone_rare.png", rippleColor: "rgba(0,191,255,0.9)", desc: "수면에 닿을 때마다 푸른 이온 스파크 파동이 터지는 돌" },
@@ -6,15 +5,14 @@ const stones = [
     { id: "mythic", name: "XNOT 황금 운석", image: "images/stone_mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
 ];
 
-// [★대표님 지시] 돌 종류와 무관하게 완전히 무작위로 바뀔 게임 배경 이미지 리스트
+// 랜덤 게임 배경화면 배열
 const gameBackgrounds = [
-    "images/bg_stage_1.png", // 기본 강가
-    "images/bg_stage_2.png", // 신비로운 호수
-    "images/bg_stage_3.png", // 밤의 계곡
+    "images/bg_stage_1.png", 
+    "images/bg_stage_2.png", 
+    "images/bg_stage_3.png", 
     "images/bg_stage_4.png"  
 ];
 
-// 유저 자산 및 컬렉션 상태 데이터
 let playerHearts = 5;
 let playerSP = 0;
 let unlockedSkins = ["ordinary"]; 
@@ -40,6 +38,12 @@ const heartsCountEl = document.getElementById('hearts-count');
 const spCountEl = document.getElementById('sp-count');
 const youtubeModal = document.getElementById('youtube-modal');
 const videoTimerEl = document.getElementById('video-timer');
+
+// [★초기화 영점 보정] 첫 구동 시점에 무조건 컨테이너 배경을 룰렛용 대장간 배경으로 강제 지정하여 까만 화면 원천 제거
+function initGameSettings() {
+    container.style.backgroundImage = "url('images/bg_roulette.png')";
+    updateAssetUI();
+}
 
 function updateAssetUI() {
     heartsCountEl.innerText = playerHearts;
@@ -111,7 +115,7 @@ const handleMainBtn = (e) => {
         playerHearts--; 
         updateAssetUI();
 
-        // [★정밀 타격] 던지기 시작 시점: 무조건 인라인 스타일에 강제로 랜덤 게임 배경을 꽂아 넣습니다.
+        // 버튼을 누르는 즉시! 물수제비 던지기 화면용 무작위 게임 배경으로 칼같이 스왑
         const randomBg = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
         container.style.backgroundImage = `url('${randomBg}')`;
 
@@ -203,7 +207,7 @@ function animateSkipping(total) {
 
     function frameLoop(timestamp) {
         const progress = currentBounce / total;
-        const stepDuration = 380 * Math.pow(1 - progress, 2.5) + 35;
+        const stepDuration = 260 * Math.pow(1 - progress, 2.5) + 35;
         
         let progressInStep = (timestamp - stepStartTime) / stepDuration;
         if (progressInStep > 1) progressInStep = 1;
@@ -260,8 +264,8 @@ function animateSkipping(total) {
                 
                 currentStatus = "PRE_SPIN";
                 
-                // [★완공] 정산 후 루프 초기화 장치: 컨테이너의 배경을 다시 가챠용 배경으로 초기화합니다.
-                container.style.backgroundImage = "none"; 
+                // [★영점수술] 한 판이 다 끝나고 복귀하면 다시 룰렛 전용 대장간 배경(`bg_roulette.png`)으로 강제 초기화
+                container.style.backgroundImage = "url('images/bg_roulette.png')"; 
                 rouletteScreen.style.display = 'flex';
                 updateAssetUI();
             }, 1800);
@@ -287,4 +291,5 @@ function createBounceEffect(x, y, count, color) {
     container.appendChild(rip);
 }
 
-updateAssetUI();
+// 초기 기동 엔진 슛
+initGameSettings();

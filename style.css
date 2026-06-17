@@ -26,7 +26,6 @@ body, html {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    /* [★영점수술] 자바스크립트가 주는 랜덤 배경을 유연하게 그릴 수 있도록 초기 락 해제 */
 }
 
 /* 자산 정보 표시 */
@@ -79,7 +78,7 @@ body, html {
 #score-display { font-size: 44px; font-weight: 900; color: var(--primary); text-shadow: 0 4px 8px rgba(0,0,0,0.4); }
 #message { font-size: 18px; color: white; margin-top: 10px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-/* 룰렛 화면 패널 (게임 컨테이너 위에 완벽하게 덮어씌워 엉킴 방지) */
+/* 룰렛 화면 패널 (불필요한 투명도나 알파값을 걷어내고 완벽하게 독립 레이어로 잠금) */
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
@@ -94,7 +93,7 @@ body, html {
 }
 #roulette-title { color: var(--primary); margin-bottom: 20px; text-align: center; padding: 0 20px; font-size: 22px; font-weight: bold; }
 
-/* 회전하는 고대 룬 바퀴 */
+/* 고대 룬 바퀴 */
 #roulette-wheel { 
     width: 280px; 
     height: 280px; 
@@ -116,7 +115,6 @@ body, html {
 }
 .pointer { position: absolute; top: -20px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ef4444; z-index: 1100; }
 
-/* 바퀴 내부 텍스트 레이아웃 보정 */
 #stone-display-name { 
     font-size: 22px; 
     font-weight: bold; 
@@ -151,4 +149,3 @@ body, html {
     z-index: 900;
 }
 @keyframes arrow-up { 0% { transform: translateY(10px); opacity: 0.3; } 50% { transform: translateY(-10px); opacity: 1; } 100% { transform: translateY(10px); opacity: 0.3; } }
-/* [★수술 완료] 불필요하게 밀려 들어와 오류를 내던 맨 끝 중괄호 폐기 완료 */

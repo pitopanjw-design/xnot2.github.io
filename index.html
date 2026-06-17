@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XNOT Stone Skipper V5.1</title>
+    <title>XNOT Stone Skipper V5.2 (Mobile Physics)</title>
     <style>
         :root { --primary: #deff9a; --bg: #0f172a; --danger: #ef4444; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; background: var(--bg); color: white; user-select: none; -webkit-user-select: none; }
@@ -24,6 +24,7 @@
         #hearts-count { color: var(--danger); }
         #sp-count { color: var(--primary); }
 
+        /* [변경] 바운스 포인트는 수면에 그대로 고정 */
         .bounce-point {
             position: absolute; width: 35px; height: 18px;
             background: rgba(255, 255, 255, 0.7); border-radius: 50%;
@@ -44,7 +45,7 @@
             to { width: 180px; height: 90px; opacity: 0; }
         }
 
-        /* 인게임 돌 레이어 최상위 보장 */
+        /* 인게임 돌 레이어 최상위 */
         #ingame-stone {
             position: absolute; 
             top: 80%; 
@@ -57,23 +58,21 @@
             background-position: center;
             border-radius: 50%;
             transform: translate(-50%, -50%) scale(1);
-            cursor: grab; 
             z-index: 999; 
             display: none; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
-        #ingame-stone:active { cursor: grabbing; }
 
         .ui-layer { position: absolute; top: 90px; left: 0; width: 100%; text-align: center; pointer-events: none; z-index: 150; }
         #score-display { font-size: 44px; font-weight: 900; color: var(--primary); text-shadow: 0 4px 8px rgba(0,0,0,0.4); }
         #message { font-size: 18px; color: white; margin-top: 10px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
         #roulette-screen { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .wheel-container { width: 240px; height: 240px; border: 8px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; background: #1e293b; box-shadow: 0 0 30px rgba(222,255,154,0.3); cursor: pointer; transition: transform 0.1s ease-out; }
+        .wheel-container { width: 240px; height: 240px; border: 8px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; background: #1e293b; box-shadow: 0 0 30px rgba(222,255,154,0.3); -webkit-tap-highlight-color: transparent; }
         .pointer { position: absolute; top: -20px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ef4444; z-index: 1100; }
         #stone-display-name { font-size: 24px; font-weight: bold; color: white; text-align: center; padding: 10px; pointer-events: none; }
         
-        .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 18px 60px; font-size: 22px; font-weight: bold; border-radius: 40px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; }
+        .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 18px 60px; font-size: 22px; font-weight: bold; border-radius: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; -webkit-tap-highlight-color: transparent; }
 
         #youtube-modal { position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
 
@@ -160,7 +159,6 @@
         const youtubeModal = document.getElementById('youtube-modal');
         const videoTimerEl = document.getElementById('video-timer');
 
-        // [순정 V3.0] 자산 UI 매커니즘
         function updateAssetUI() {
             heartsCountEl.innerText = playerHearts;
             spCountEl.innerText = playerSP.toLocaleString();
@@ -173,7 +171,6 @@
             }
         }
 
-        // [순정 V3.0] 룰렛 회전 완벽 복원
         function triggerWheel(e) {
             if (e) e.preventDefault();
             if (playerHearts <= 0) {
@@ -210,8 +207,10 @@
             }, 90);
         }
 
+        wheelEl.ontouchstart = triggerWheel;
         wheelEl.onclick = triggerWheel;
-        mainBtn.onclick = (e) => {
+
+        const handleMainBtn = (e) => {
             e.preventDefault();
             if (playerHearts <= 0 && currentStatus === "PRE_SPIN") {
                 openYoutubeCharge();
@@ -226,7 +225,6 @@
 
                 rouletteScreen.style.display = 'none'; 
                 
-                // 돌 영점 재확보 및 노출
                 ingameStoneEl.style.top = '80%';
                 ingameStoneEl.style.left = '50%';
                 ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
@@ -241,6 +239,9 @@
             }
         };
 
+        mainBtn.ontouchstart = handleMainBtn;
+        mainBtn.onclick = handleMainBtn;
+
         function openYoutubeCharge() {
             youtubeModal.style.display = "flex";
             let timeLeft = 5;
@@ -250,152 +251,3 @@
                 timeLeft--;
                 videoTimerEl.innerText = timeLeft;
                 if(timeLeft <= 0) {
-                    clearInterval(adTimer);
-                    playerHearts = 5;
-                    youtubeModal.style.display = "none";
-                    
-                    document.getElementById('roulette-title').innerText = "TOUCH THE WHEEL TO START CHANCE";
-                    mainBtn.innerText = "SPIN WHEEL";
-                    mainBtn.style.background = "var(--primary)";
-                    mainBtn.style.color = "#0f172a";
-                    
-                    updateAssetUI();
-                }
-            }, 1000);
-        }
-
-        // [안정화] 스와이프 입력 장치
-        function onDragStart(e) {
-            if(!isPlaying) return;
-            startY = e.touches ? e.touches[0].clientY : e.clientY;
-            startTime = Date.now();
-        }
-
-        function onDragEnd(e) {
-            if(!isPlaying) return;
-            const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-            const dist = startY - endY; 
-            const duration = Date.now() - startTime;
-            
-            if (dist > 10) {
-                let speed = dist / (duration || 1);
-                launchStone(speed);
-            }
-        }
-
-        ingameStoneEl.addEventListener('touchstart', onDragStart, { passive: true });
-        ingameStoneEl.addEventListener('touchend', onDragEnd, { passive: true });
-        ingameStoneEl.addEventListener('mousedown', onDragStart);
-        ingameStoneEl.addEventListener('mouseup', onDragEnd);
-
-        function launchStone(speed) {
-            isPlaying = false;
-            document.getElementById('swipe-guide').style.display = 'none';
-            
-            let totalBounces = Math.floor(speed * 9 * selectedStone.mult);
-            if(Math.random() < selectedStone.luck) {
-                totalBounces = Math.floor(totalBounces * 2.2);
-                message.innerText = "⚡ CRITICAL LUCKY HIT! ⚡";
-            } else {
-                message.innerText = "NICE SHOT!";
-            }
-            if(totalBounces < 3) totalBounces = 3; 
-
-            animateSkipping(totalBounces);
-        }
-
-        // [★화면 얼지 않는 프레임 제어 엔진 전환]
-        function animateSkipping(total) {
-            const startYPosition = window.innerHeight * 0.8; 
-            const horizonY = window.innerHeight * 0.35;       
-            const totalDistanceY = startYPosition - horizonY;
-            
-            let currentBounce = 0;
-            let stepStartTime = Date.now();
-            
-            // 첫 포인트 생성
-            createBounceEffect(window.innerWidth / 2, startYPosition, 1);
-
-            function frameLoop() {
-                const now = Date.now();
-                // 원본 V3.0의 촘촘해지는 타이밍 공식을 프레임 단위로 반영
-                const stepDuration = 120 + ((currentBounce / total) * 120);
-                const progressInStep = (now - stepStartTime) / stepDuration;
-
-                if (progressInStep >= 1) {
-                    currentBounce++;
-                    stepStartTime = now;
-
-                    if (currentBounce < total) {
-                        const progress = (currentBounce + 1) / total;
-                        const currentY = startYPosition - (totalDistanceY * Math.pow(progress, 0.65));
-                        const currentX = window.innerWidth / 2;
-                        
-                        createBounceEffect(currentX, currentY, currentBounce + 1);
-                        scoreDisplay.innerText = `${currentBounce + 1} SKIPS`;
-                    }
-                }
-
-                // 실시간 위치 보간 연산 및 스케일 축소
-                const totalProgress = Math.min((currentBounce + Math.min(progressInStep, 1)) / total, 1);
-                const currentY = startYPosition - (totalDistanceY * Math.pow(totalProgress, 0.65));
-                const currentX = window.innerWidth / 2;
-                const scale = 1 - (totalProgress * 0.65);
-
-                ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
-                ingameStoneEl.style.left = `${currentX}px`;
-                ingameStoneEl.style.top = `${currentY}px`;
-
-                if (currentBounce < total - 1 || (currentBounce === total - 1 && progressInStep < 1)) {
-                    requestAnimationFrame(frameLoop);
-                } else {
-                    // 비행 종료 후 자연스러운 침몰 연출 마감
-                    ingameStoneEl.style.transition = "opacity 0.5s ease-out, top 0.5s ease-out";
-                    ingameStoneEl.style.top = `${currentY + 40}px`;
-                    ingameStoneEl.style.opacity = '0';
-
-                    const minedSP = total * 1000;
-                    playerSP += minedSP;
-                    updateAssetUI();
-                    
-                    message.innerText = `🎉 +${minedSP.toLocaleString()} SP 채굴 완료!`;
-                    
-                    setTimeout(() => {
-                        document.querySelectorAll('.bounce-point').forEach(p => p.remove());
-                        ingameStoneEl.style.transition = "none"; 
-                        ingameStoneEl.style.display = 'none';
-                        
-                        // 완벽한 루프 리셋 (2회차 먹통 방지)
-                        stoneDisplayName.innerText = "돌 뽑기 터치!";
-                        stoneDesc.innerText = "다음 기회를 위해 돌을 다시 뽑으세요.";
-                        mainBtn.innerText = "SPIN WHEEL";
-                        
-                        currentStatus = "PRE_SPIN";
-                        rouletteScreen.style.display = 'flex';
-                        updateAssetUI();
-                    }, 1800);
-                }
-            }
-
-            requestAnimationFrame(frameLoop);
-        }
-
-        function createBounceEffect(x, y, count) {
-            const point = document.createElement('div');
-            point.className = 'bounce-point';
-            point.style.left = `${x}px`;
-            point.style.top = `${y}px`;
-            point.innerText = count;
-            container.appendChild(point);
-
-            const rip = document.createElement('div');
-            rip.className = 'ripple';
-            rip.style.left = `${x}px`;
-            rip.style.top = `${y}px`;
-            container.appendChild(rip);
-        }
-
-        updateAssetUI();
-    </script>
-</body>
-</html>

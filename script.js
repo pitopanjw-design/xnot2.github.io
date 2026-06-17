@@ -1,3 +1,4 @@
+// [★대표님 직관 반영] 성능 왜곡 전면 폐기 -> 오직 외형 스킨 컬렉션 데이터셋으로 재조립
 const stones = [
     { id: "ordinary", name: "평범한 조약돌", image: "images/stone_ordinary.png", rippleColor: "rgba(255,255,255,0.8)", desc: "강가에서 흔히 볼 수 있는 친숙한 기본 조약돌" },
     { id: "rare", name: "거친 현무암", image: "images/stone_rare.png", rippleColor: "rgba(0,191,255,0.9)", desc: "수면에 닿을 때마다 푸른 이온 스파크 파동이 터지는 돌" },
@@ -5,7 +6,7 @@ const stones = [
     { id: "mythic", name: "XNOT 황금 운석", image: "images/stone_mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
 ];
 
-// 랜덤 게임 배경화면 배열
+// 랜덤 게임 배경화면 배열 (돌 기획과 무관하게 매 판 무작위 스왑)
 const gameBackgrounds = [
     "images/bg_stage_1.png", 
     "images/bg_stage_2.png", 
@@ -24,7 +25,8 @@ let startTime = 0;
 let isPlaying = false;
 let currentStatus = "PRE_SPIN"; 
 
-const rouletteScreen = document.getElementById('roulette-screen');
+// HTML 태그 ID 매칭 유연화 가드
+const rouletteScreen = document.getElementById('roulette-screen') || document.getElementById('roulette-container');
 const wheelEl = document.getElementById('roulette-wheel');
 const stoneDisplayName = document.getElementById('stone-display-name');
 const stoneDesc = document.getElementById('stone-desc');
@@ -39,15 +41,36 @@ const spCountEl = document.getElementById('sp-count');
 const youtubeModal = document.getElementById('youtube-modal');
 const videoTimerEl = document.getElementById('video-timer');
 
-// [★초기화 영점 보정] 첫 구동 시점에 무조건 컨테이너 배경을 룰렛용 대장간 배경으로 강제 지정하여 까만 화면 원천 제거
+// [★초기화 및 레이어 장벽 영점 수술]
+// HTML과 CSS 명칭이 달라도 자바스크립트 가동 즉시 룰렛 배경을 화면 최상위에 강제 고정합니다.
 function initGameSettings() {
-    container.style.backgroundImage = "url('images/bg_roulette.png')";
+    if (container) {
+        container.style.position = "relative";
+        container.style.width = "100%";
+        container.style.height = "100vh";
+        container.style.overflow = "hidden";
+        container.style.backgroundSize = "cover";
+        container.style.backgroundPosition = "center";
+        // 첫 진입 시 배경을 검은 화면 대신 룰렛 전용 대장간 이미지로 강제 점등
+        container.style.backgroundImage = "url('images/bg_roulette.png')";
+    }
+    
+    if (rouletteScreen) {
+        rouletteScreen.style.position = "absolute";
+        rouletteScreen.style.inset = "0";
+        rouletteScreen.style.backgroundImage = "url('images/bg_roulette.png')";
+        rouletteScreen.style.backgroundSize = "cover";
+        rouletteScreen.style.backgroundPosition = "center";
+        rouletteScreen.style.zIndex = "1000"; // 인게임 요소가 뚫고 나오지 못하게 강제 잠금
+        rouletteScreen.style.display = "flex";
+    }
+    
     updateAssetUI();
 }
 
 function updateAssetUI() {
-    heartsCountEl.innerText = playerHearts;
-    spCountEl.innerText = playerSP.toLocaleString();
+    if (heartsCountEl) heartsCountEl.innerText = playerHearts;
+    if (spCountEl) spCountEl.innerText = playerSP.toLocaleString();
     
     if (playerHearts <= 0 && currentStatus === "PRE_SPIN") {
         document.getElementById('roulette-title').innerText = "하트 부족! 에너지를 충전하세요.";
@@ -72,13 +95,13 @@ function triggerWheel(e) {
         stoneDisplayName.innerText = current.name;
         stoneDesc.innerText = current.desc;
         
-        wheelEl.style.transform = `rotate(${tick * 45}deg)`;
+        if (wheelEl) wheelEl.style.transform = `rotate(${tick * 45}deg)`;
         tick++;
         
         if(tick > 12) {
             clearInterval(timer);
             selectedStone = current;
-            wheelEl.style.transform = `rotate(0deg)`; 
+            if (wheelEl) wheelEl.style.transform = `rotate(0deg)`; 
             
             if (!unlockedSkins.includes(selectedStone.id)) {
                 unlockedSkins.push(selectedStone.id);
@@ -87,7 +110,7 @@ function triggerWheel(e) {
                 stoneDisplayName.innerText = `${selectedStone.name} (보유 중)`;
             }
             
-            ingameStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
+            if (ingameStoneEl) ingameStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
             
             document.getElementById('roulette-title').innerText = "SKIN READY!";
             mainBtn.innerText = "LAUNCH STONE (❤️ 1 소모)";
@@ -99,8 +122,10 @@ function triggerWheel(e) {
     }, 90);
 }
 
-wheelEl.ontouchstart = triggerWheel;
-wheelEl.onclick = triggerWheel;
+if (wheelEl) {
+    wheelEl.ontouchstart = triggerWheel;
+    wheelEl.onclick = triggerWheel;
+}
 
 const handleMainBtn = (e) => {
     e.preventDefault();
@@ -115,17 +140,19 @@ const handleMainBtn = (e) => {
         playerHearts--; 
         updateAssetUI();
 
-        // 버튼을 누르는 즉시! 물수제비 던지기 화면용 무작위 게임 배경으로 칼같이 스왑
+        // LAUNCH STONE을 누르는 즉시 게임 화면용 랜덤 배경화면 매핑 전송
         const randomBg = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
         container.style.backgroundImage = `url('${randomBg}')`;
 
-        rouletteScreen.style.display = 'none'; 
+        if (rouletteScreen) rouletteScreen.style.display = 'none'; 
         
-        ingameStoneEl.style.left = '50%';
-        ingameStoneEl.style.top = '80%';
-        ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
-        ingameStoneEl.style.opacity = '1';
-        ingameStoneEl.style.display = 'block';
+        if (ingameStoneEl) {
+            ingameStoneEl.style.left = '50%';
+            ingameStoneEl.style.top = '80%';
+            ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
+            ingameStoneEl.style.opacity = '1';
+            ingameStoneEl.style.display = 'block';
+        }
         
         document.getElementById('swipe-guide').style.display = 'block';
         scoreDisplay.innerText = "0 SKIPS";
@@ -135,21 +162,23 @@ const handleMainBtn = (e) => {
     }
 };
 
-mainBtn.ontouchstart = handleMainBtn;
-mainBtn.onclick = handleMainBtn;
+if (mainBtn) {
+    mainBtn.ontouchstart = handleMainBtn;
+    mainBtn.onclick = handleMainBtn;
+}
 
 function openYoutubeCharge() {
-    youtubeModal.style.display = "flex";
+    if (youtubeModal) youtubeModal.style.display = "flex";
     let timeLeft = 5;
-    videoTimerEl.innerText = timeLeft;
+    if (videoTimerEl) videoTimerEl.innerText = timeLeft;
     
     const adTimer = setInterval(() => {
         timeLeft--;
-        videoTimerEl.innerText = timeLeft;
+        if (videoTimerEl) videoTimerEl.innerText = timeLeft;
         if(timeLeft <= 0) {
             clearInterval(adTimer);
             playerHearts = 5;
-            youtubeModal.style.display = "none";
+            if (youtubeModal) youtubeModal.style.display = "none";
             
             document.getElementById('roulette-title').innerText = "TOUCH THE WHEEL TO START CHANCE";
             mainBtn.innerText = "SPIN WHEEL";
@@ -179,10 +208,12 @@ function onDragEnd(e) {
     }
 }
 
-ingameStoneEl.addEventListener('touchstart', onDragStart, { passive: true });
-ingameStoneEl.addEventListener('touchend', onDragEnd, { passive: true });
-ingameStoneEl.addEventListener('mousedown', onDragStart);
-ingameStoneEl.addEventListener('mouseup', onDragEnd);
+if (ingameStoneEl) {
+    ingameStoneEl.addEventListener('touchstart', onDragStart, { passive: true });
+    ingameStoneEl.addEventListener('touchend', onDragEnd, { passive: true });
+    ingameStoneEl.addEventListener('mousedown', onDragStart);
+    ingameStoneEl.addEventListener('mouseup', onDragEnd);
+}
 
 function launchStone(speed) {
     isPlaying = false;
@@ -207,7 +238,7 @@ function animateSkipping(total) {
 
     function frameLoop(timestamp) {
         const progress = currentBounce / total;
-        const stepDuration = 260 * Math.pow(1 - progress, 2.5) + 35;
+        const stepDuration = 260 * Math.pow(1 - progress, 2.5) + 35; // 대표님 시그니처 호흡 배정
         
         let progressInStep = (timestamp - stepStartTime) / stepDuration;
         if (progressInStep > 1) progressInStep = 1;
@@ -225,9 +256,11 @@ function animateSkipping(total) {
         
         const stoneRenderY = surfaceY - jumpOffset;
 
-        ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
-        ingameStoneEl.style.left = `${currentX}px`;
-        ingameStoneEl.style.top = `${stoneRenderY}px`;
+        if (ingameStoneEl) {
+            ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            ingameStoneEl.style.left = `${currentX}px`;
+            ingameStoneEl.style.top = `${stoneRenderY}px`;
+        }
 
         if (progressInStep >= 1) {
             currentBounce++;
@@ -243,9 +276,11 @@ function animateSkipping(total) {
         if (currentBounce < total) {
             requestAnimationFrame(frameLoop);
         } else {
-            ingameStoneEl.style.transition = "opacity 0.6s ease-out, top 0.6s ease-out";
-            ingameStoneEl.style.top = `${surfaceY + 40}px`;
-            ingameStoneEl.style.opacity = '0';
+            if (ingameStoneEl) {
+                ingameStoneEl.style.transition = "opacity 0.6s ease-out, top 0.6s ease-out";
+                ingameStoneEl.style.top = `${surfaceY + 40}px`;
+                ingameStoneEl.style.opacity = '0';
+            }
 
             const minedSP = total * 1000;
             playerSP += minedSP;
@@ -255,8 +290,10 @@ function animateSkipping(total) {
             
             setTimeout(() => {
                 document.querySelectorAll('.bounce-point').forEach(p => p.remove());
-                ingameStoneEl.style.transition = "none"; 
-                ingameStoneEl.style.display = 'none';
+                if (ingameStoneEl) {
+                    ingameStoneEl.style.transition = "none"; 
+                    ingameStoneEl.style.display = 'none';
+                }
                 
                 stoneDisplayName.innerText = "돌 뽑기 터치!";
                 stoneDesc.innerText = "다음 기회를 위해 돌을 다시 뽑으세요.";
@@ -264,9 +301,9 @@ function animateSkipping(total) {
                 
                 currentStatus = "PRE_SPIN";
                 
-                // [★영점수술] 한 판이 다 끝나고 복귀하면 다시 룰렛 전용 대장간 배경(`bg_roulette.png`)으로 강제 초기화
-                container.style.backgroundImage = "url('images/bg_roulette.png')"; 
-                rouletteScreen.style.display = 'flex';
+                // 정산 복귀 후 타이밍: 배경을 즉시 다시 대장간 배경으로 원복하여 까만 화면 영구 소멸
+                if (container) container.style.backgroundImage = "url('images/bg_roulette.png')"; 
+                if (rouletteScreen) rouletteScreen.style.display = 'flex';
                 updateAssetUI();
             }, 1800);
         }
@@ -281,15 +318,15 @@ function createBounceEffect(x, y, count, color) {
     point.style.left = `${x}px`;
     point.style.top = `${y}px`;
     point.innerText = count;
-    container.appendChild(point);
+    if (container) container.appendChild(point);
 
     const rip = document.createElement('div');
     rip.className = 'ripple';
     rip.style.left = `${x}px`;
     rip.style.top = `${y}px`;
     rip.style.borderColor = color;
-    container.appendChild(rip);
+    if (container) container.appendChild(rip);
 }
 
-// 초기 기동 엔진 슛
+// 스크립트 로드 즉시 강제 점등 구동
 initGameSettings();

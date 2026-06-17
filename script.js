@@ -5,13 +5,8 @@ const stones = [
     { id: "mythic", name: "XNOT 황금 운석", image: "images/stone_mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
 ];
 
-// 랜덤 게임 배경화면 배열
-const gameBackgrounds = [
-    "images/bg_stage_1.png", 
-    "images/bg_stage_2.png", 
-    "images/bg_stage_3.png", 
-    "images/bg_stage_4.png"  
-];
+// 랜덤 게임 배경화면 클래스 배열
+const gameBackgrounds = ["stage1", "stage2", "stage3", "stage4"];
 
 let playerHearts = 5;
 let playerSP = 0;
@@ -39,9 +34,9 @@ const spCountEl = document.getElementById('sp-count');
 const youtubeModal = document.getElementById('youtube-modal');
 const videoTimerEl = document.getElementById('video-timer');
 
-// [근본 해결] 첫 기동 시점 및 리셋 시점에 인게임 기본 스테이지 배경을 미리 주입하여 검은 화면 원천 차단
+// [근본 해결] 첫 기동 시점 및 리셋 시점에 인게임 기본 스테이지 배경 클래스를 미리 주입하여 검은 화면 원천 차단
 function initGameSettings() {
-    if (container) container.style.backgroundImage = `url('${gameBackgrounds[0]}')`;
+    if (container) container.classList.add(gameBackgrounds[0]);
     updateAssetUI();
 }
 
@@ -117,11 +112,11 @@ const handleMainBtn = (e) => {
         playerHearts--; 
         updateAssetUI();
 
-        // 1. 룰렛 화면을 끄기 전에 인게임 컨테이너 배경에 무작위 스테이지를 쾅 박아넣습니다.
-        const randomBg = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
-        container.style.backgroundImage = `url('${randomBg}')`;
+        // [근본 해결] 기존에 붙어있던 스테이지 클래스를 싹 청소하고, 새로운 랜덤 스테이지 클래스만 깨끗하게 주입합니다.
+        container.className = ""; 
+        const randomStage = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
+        container.classList.add(randomStage);
 
-        // 2. 부모 컨테이너가 정상적으로 배경을 인지한 뒤에 룰렛 스크린을 걷어냅니다.
         rouletteScreen.style.display = 'none'; 
         
         ingameStoneEl.style.left = '50%';
@@ -275,9 +270,8 @@ function animateSkipping(total) {
                 
                 currentStatus = "PRE_SPIN";
                 
-                // [근본 해결] 복귀하는 순간 컨테이너의 인라인 배경 스타일을 리셋하여 
-                // CSS 파일에 정의된 본래의 bg_roulette.png가 즉시 표출되도록 강제 연동합니다.
-                container.style.backgroundImage = ""; 
+                // [근본 해결] 복귀할 때 인게임 스테이지 클래스를 청소하여 부모-자식 간의 렌더링 간섭을 소멸시킵니다.
+                container.className = ""; 
                 rouletteScreen.style.display = 'flex';
                 
                 updateAssetUI();

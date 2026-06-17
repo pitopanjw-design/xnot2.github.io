@@ -28,6 +28,11 @@ body, html {
     background-repeat: no-repeat;
 }
 
+#game-container.stage1 { background: url('images/bg_stage_1.png') center/cover no-repeat; }
+#game-container.stage2 { background: url('images/bg_stage_2.png') center/cover no-repeat; }
+#game-container.stage3 { background: url('images/bg_stage_3.png') center/cover no-repeat; }
+#game-container.stage4 { background: url('images/bg_stage_4.png') center/cover no-repeat; }
+
 /* 자산 정보 표시 */
 .asset-bar { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 200; pointer-events: none; }
 .asset-box { background: rgba(15, 23, 42, 0.8); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
@@ -80,14 +85,12 @@ body, html {
 
 /* style.css - 룰렛 레이어 독립 장벽 고정 (오타 전면 수정본) */
 
+/* 룰렛 화면의 하드웨어 우선순위 강제 고정 락 */
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
-    background-image: url('images/bg_roulette.png') !important; /* !important를 주어 JS의 엉뚱한 간섭을 원천 차단 */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: 9999; /* 인게임의 그 어떤 블랙아웃 레이어도 뚫고 올라오지 못하게 최상위 락 */
+    background: url('images/bg_roulette.png') center/cover no-repeat !important; 
+    z-index: 9999; /* 그 어떤 인게임 레이어도 절대 뚫지 못하는 절대 장벽 */
     display: flex; 
     flex-direction: column; 
     align-items: center; 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XNOT Stone Skipper V5.2 (Mobile Physics)</title>
+    <title>XNOT Stone Skipper V5.3 (GPU Acceleration)</title>
     <style>
         :root { --primary: #deff9a; --bg: #0f172a; --danger: #ef4444; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; background: var(--bg); color: white; user-select: none; -webkit-user-select: none; }
@@ -24,7 +24,6 @@
         #hearts-count { color: var(--danger); }
         #sp-count { color: var(--primary); }
 
-        /* [변경] 바운스 포인트는 수면에 그대로 고정 */
         .bounce-point {
             position: absolute; width: 35px; height: 18px;
             background: rgba(255, 255, 255, 0.7); border-radius: 50%;
@@ -45,11 +44,11 @@
             to { width: 180px; height: 90px; opacity: 0; }
         }
 
-        /* 인게임 돌 레이어 최상위 */
+        /* [★수정] 인게임 돌: 부드러운 위치/크기 조절을 위해 기본 속성 최적화 */
         #ingame-stone {
             position: absolute; 
-            top: 80%; 
-            left: 50%; 
+            top: 0;
+            left: 0;
             width: 90px; 
             height: 60px;
             background-color: #555; 
@@ -57,10 +56,10 @@
             background-repeat: no-repeat;
             background-position: center;
             border-radius: 50%;
-            transform: translate(-50%, -50%) scale(1);
             z-index: 999; 
             display: none; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transform-origin: center center;
         }
 
         .ui-layer { position: absolute; top: 90px; left: 0; width: 100%; text-align: center; pointer-events: none; z-index: 150; }
@@ -126,6 +125,8 @@
         <div id="ingame-stone"></div>
     </div>
 
+    <div id="dynamic-style-holder"></div>
+
     <script>
         const stones = [
             { name: "평범한 조약돌", image: "images/stone_ordinary.png", mult: 1.0, luck: 0.1, desc: "표준 성능의 무난한 기본 조약돌" },
@@ -135,119 +136,4 @@
         ];
 
         let playerHearts = 5;
-        let playerSP = 0;
-
-        let selectedStone = null;
-        let isSpinning = false;
-        let startY = 0;
-        let startTime = 0;
-        let isPlaying = false;
-        let currentStatus = "PRE_SPIN"; 
-
-        const rouletteScreen = document.getElementById('roulette-screen');
-        const wheelEl = document.getElementById('roulette-wheel');
-        const stoneDisplayName = document.getElementById('stone-display-name');
-        const stoneDesc = document.getElementById('stone-desc');
-        const mainBtn = document.getElementById('main-action-btn');
-        const ingameStoneEl = document.getElementById('ingame-stone');
-        const scoreDisplay = document.getElementById('score-display');
-        const message = document.getElementById('message');
-        const container = document.getElementById('game-container');
-        
-        const heartsCountEl = document.getElementById('hearts-count');
-        const spCountEl = document.getElementById('sp-count');
-        const youtubeModal = document.getElementById('youtube-modal');
-        const videoTimerEl = document.getElementById('video-timer');
-
-        function updateAssetUI() {
-            heartsCountEl.innerText = playerHearts;
-            spCountEl.innerText = playerSP.toLocaleString();
-            
-            if (playerHearts <= 0 && currentStatus === "PRE_SPIN") {
-                document.getElementById('roulette-title').innerText = "하트 부족! 에너지를 충전하세요.";
-                mainBtn.innerText = "❤️ 유튜브 시청하고 하트 완충";
-                mainBtn.style.background = "#ef4444";
-                mainBtn.style.color = "white";
-            }
-        }
-
-        function triggerWheel(e) {
-            if (e) e.preventDefault();
-            if (playerHearts <= 0) {
-                openYoutubeCharge();
-                return;
-            }
-            if (isSpinning || currentStatus !== "PRE_SPIN") return;
-            isSpinning = true;
-            let tick = 0;
-            
-            const timer = setInterval(() => {
-                const current = stones[Math.floor(Math.random() * stones.length)];
-                stoneDisplayName.innerText = current.name;
-                stoneDesc.innerText = current.desc;
-                
-                wheelEl.style.transform = `rotate(${tick * 45}deg)`;
-                tick++;
-                
-                if(tick > 12) {
-                    clearInterval(timer);
-                    selectedStone = current;
-                    wheelEl.style.transform = `rotate(0deg)`; 
-                    stoneDisplayName.innerText = selectedStone.name;
-                    
-                    ingameStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
-                    
-                    document.getElementById('roulette-title').innerText = "STONE READY!";
-                    mainBtn.innerText = "LAUNCH STONE (❤️ 1 소모)";
-                    mainBtn.style.background = "#deff9a";
-                    mainBtn.style.color = "#0f172a";
-                    currentStatus = "SPIN_DONE";
-                    isSpinning = false;
-                }
-            }, 90);
-        }
-
-        wheelEl.ontouchstart = triggerWheel;
-        wheelEl.onclick = triggerWheel;
-
-        const handleMainBtn = (e) => {
-            e.preventDefault();
-            if (playerHearts <= 0 && currentStatus === "PRE_SPIN") {
-                openYoutubeCharge();
-                return;
-            }
-
-            if (currentStatus === "PRE_SPIN") {
-                triggerWheel();
-            } else if (currentStatus === "SPIN_DONE") {
-                playerHearts--; 
-                updateAssetUI();
-
-                rouletteScreen.style.display = 'none'; 
-                
-                ingameStoneEl.style.top = '80%';
-                ingameStoneEl.style.left = '50%';
-                ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
-                ingameStoneEl.style.opacity = '1';
-                ingameStoneEl.style.display = 'block';
-                
-                document.getElementById('swipe-guide').style.display = 'block';
-                scoreDisplay.innerText = "0 SKIPS";
-                message.innerText = "SWIPE UP FAST!";
-                isPlaying = true;
-                currentStatus = "PLAYING";
-            }
-        };
-
-        mainBtn.ontouchstart = handleMainBtn;
-        mainBtn.onclick = handleMainBtn;
-
-        function openYoutubeCharge() {
-            youtubeModal.style.display = "flex";
-            let timeLeft = 5;
-            videoTimerEl.innerText = timeLeft;
-            
-            const adTimer = setInterval(() => {
-                timeLeft--;
-                videoTimerEl.innerText = timeLeft;
-                if(timeLeft <= 0) {
+        let playerSP

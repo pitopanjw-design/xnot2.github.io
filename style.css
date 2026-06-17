@@ -78,12 +78,58 @@ body, html {
 #score-display { font-size: 44px; font-weight: 900; color: var(--primary); text-shadow: 0 4px 8px rgba(0,0,0,0.4); }
 #message { font-size: 18px; color: white; margin-top: 10px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-/* 룰렛 화면 패널 */
-#roulette-screen { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+/* Antigravity IDE - style.css 룰렛 그래픽 결합 수정본 */
+
+/* 1. 룰렛 화면 전체 패널 (대장간 배경 지정) */
+#roulette-screen { 
+    position: absolute; 
+    inset: 0; 
+    /* 대표님 기획 반영: 인게임 배경과 충돌 없는 전용 워크래프트 배경 매핑 */
+    background-image: url('images/bg_roulette.png'); 
+    background-size: cover;
+    background-position: center;
+    z-index: 1000; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+}
 #roulette-title { color: var(--primary); margin-bottom: 20px; text-align: center; padding: 0 20px; font-size: 22px; font-weight: bold; }
-.wheel-container { width: 240px; height: 240px; border: 8px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; background: #1e293b; box-shadow: 0 0 30px rgba(222,255,154,0.3); -webkit-tap-highlight-color: transparent; }
+
+/* 2. 회전할 룰렛 바퀴 컨테이너 (고대 룬 바퀴 이미지 매핑) */
+.wheel-container { 
+    width: 280px;  /* 이미지 비율에 맞게 크기 소폭 상향 */
+    height: 280px; 
+    background-image: url('images/roulette_wheel.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none; /* 기존 임시 테두리 완벽 제거 */
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+    margin-bottom: 30px; 
+    box-shadow: 0 0 40px rgba(222,255,154,0.25); /* XNOT 시그니처 형광 은은한 광채 */
+    -webkit-tap-highlight-color: transparent; 
+    
+    /* 자바스크립트 회전 애니메이션이 끊기지 않고 부드럽게 돌도록 하드웨어 가속 힌트 제공 */
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
 .pointer { position: absolute; top: -20px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ef4444; z-index: 1100; }
-#stone-display-name { font-size: 24px; font-weight: bold; color: white; text-align: center; padding: 10px; pointer-events: none; }
+
+/* 3. 바퀴 내부 텍스트 레이아웃 보정 (스킨 이름 노출 위치 고정) */
+#stone-display-name { 
+    font-size: 22px; 
+    font-weight: bold; 
+    color: #ffffff; 
+    text-align: center; 
+    padding: 10px; 
+    pointer-events: none; 
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(222,255,154,0.5); /* 룬 문자처럼 보이게 폰트 발광 효과 */
+}
 #stone-desc { color: #94a3b8; font-size: 15px; margin-top: -15px; margin-bottom: 30px; text-align: center; padding: 0 20px; min-height: 40px; }
 .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 18px 60px; font-size: 22px; font-weight: bold; border-radius: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 10px; -webkit-tap-highlight-color: transparent; }
 

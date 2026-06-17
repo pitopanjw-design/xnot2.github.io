@@ -17,7 +17,7 @@ body, html {
     -webkit-user-select: none; 
 }
 
-/* 게임 전체를 담는 컨테이너 */
+/* [근본 해결] 인게임 화면 전용 컨테이너 (여기는 인게임 배경만 책임집니다) */
 #game-container {
     position: relative;
     width: 100%;
@@ -78,14 +78,15 @@ body, html {
 #score-display { font-size: 44px; font-weight: 900; color: var(--primary); text-shadow: 0 4px 8px rgba(0,0,0,0.4); }
 #message { font-size: 18px; color: white; margin-top: 10px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-/* 룰렛 화면 패널 (불필요한 투명도나 알파값을 걷어내고 완벽하게 독립 레이어로 잠금) */
+/* [근본 해결] 대장간 룰렛 전용 독립 레이어 장벽 고정 */
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
-    background-image: url('images/bg_roulette.png'); 
+    background-image: url('images/bg_roulette.png') !important; /* 자바스크립트가 지우지 못하도록 강제 우선순위 락 */
     background-size: cover;
     background-position: center;
-    z-index: 1000; 
+    background-repeat: no-repeat;
+    z-index: 1000; /* 인게임 화면을 완벽히 아래로 누름 */
     display: flex; 
     flex-direction: column; 
     align-items: center; 
@@ -93,11 +94,11 @@ body, html {
 }
 #roulette-title { color: var(--primary); margin-bottom: 20px; text-align: center; padding: 0 20px; font-size: 22px; font-weight: bold; }
 
-/* 고대 룬 바퀴 */
+/* 고대 룬 바퀴 고정 */
 #roulette-wheel { 
     width: 280px; 
     height: 280px; 
-    background-image: url('images/roulette_wheel.png');
+    background-image: url('images/roulette_wheel.png') !important; /* 이미지 강제 고정 락 */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

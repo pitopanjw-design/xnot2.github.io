@@ -1,4 +1,3 @@
-// [★대표님 직관 반영] 성능 왜곡 전면 폐기 -> 오직 외형 스킨 컬렉션 데이터셋으로 재조립
 const stones = [
     { id: "ordinary", name: "평범한 조약돌", image: "images/stone_ordinary.png", rippleColor: "rgba(255,255,255,0.8)", desc: "강가에서 흔히 볼 수 있는 친숙한 기본 조약돌" },
     { id: "rare", name: "거친 현무암", image: "images/stone_rare.png", rippleColor: "rgba(0,191,255,0.9)", desc: "수면에 닿을 때마다 푸른 이온 스파크 파동이 터지는 돌" },
@@ -6,7 +5,7 @@ const stones = [
     { id: "mythic", name: "XNOT 황금 운석", image: "images/stone_mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
 ];
 
-// 랜덤 게임 배경화면 배열 (돌 기획과 무관하게 매 판 무작위 스왑)
+// 랜덤 게임 배경화면 배열
 const gameBackgrounds = [
     "images/bg_stage_1.png", 
     "images/bg_stage_2.png", 
@@ -25,8 +24,7 @@ let startTime = 0;
 let isPlaying = false;
 let currentStatus = "PRE_SPIN"; 
 
-// HTML 태그 ID 매칭 유연화 가드
-const rouletteScreen = document.getElementById('roulette-screen') || document.getElementById('roulette-container');
+const rouletteScreen = document.getElementById('roulette-screen');
 const wheelEl = document.getElementById('roulette-wheel');
 const stoneDisplayName = document.getElementById('stone-display-name');
 const stoneDesc = document.getElementById('stone-desc');
@@ -41,30 +39,9 @@ const spCountEl = document.getElementById('sp-count');
 const youtubeModal = document.getElementById('youtube-modal');
 const videoTimerEl = document.getElementById('video-timer');
 
-// [★초기화 및 레이어 장벽 영점 수술]
-// HTML과 CSS 명칭이 달라도 자바스크립트 가동 즉시 룰렛 배경을 화면 최상위에 강제 고정합니다.
+// [근본 해결] 첫 기동 시점 및 리셋 시점에 인게임 기본 스테이지 배경을 미리 주입하여 검은 화면 원천 차단
 function initGameSettings() {
-    if (container) {
-        container.style.position = "relative";
-        container.style.width = "100%";
-        container.style.height = "100vh";
-        container.style.overflow = "hidden";
-        container.style.backgroundSize = "cover";
-        container.style.backgroundPosition = "center";
-        // 첫 진입 시 배경을 검은 화면 대신 룰렛 전용 대장간 이미지로 강제 점등
-        container.style.backgroundImage = "url('images/bg_roulette.png')";
-    }
-    
-    if (rouletteScreen) {
-        rouletteScreen.style.position = "absolute";
-        rouletteScreen.style.inset = "0";
-        rouletteScreen.style.backgroundImage = "url('images/bg_roulette.png')";
-        rouletteScreen.style.backgroundSize = "cover";
-        rouletteScreen.style.backgroundPosition = "center";
-        rouletteScreen.style.zIndex = "1000"; // 인게임 요소가 뚫고 나오지 못하게 강제 잠금
-        rouletteScreen.style.display = "flex";
-    }
-    
+    if (container) container.style.backgroundImage = `url('${gameBackgrounds[0]}')`;
     updateAssetUI();
 }
 
@@ -140,9 +117,9 @@ const handleMainBtn = (e) => {
         playerHearts--; 
         updateAssetUI();
 
-        // LAUNCH STONE을 누르는 즉시 게임 화면용 랜덤 배경화면 매핑 전송
+        // 룰렛 창이 닫히기 직전, 인게임 백그라운드에 랜덤 배경을 주입 (레이어 격리로 안전하게 처리)
         const randomBg = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
-        container.style.backgroundImage = `url('${randomBg}')`;
+        if (container) container.style.backgroundImage = `url('${randomBg}')`;
 
         if (rouletteScreen) rouletteScreen.style.display = 'none'; 
         
@@ -238,7 +215,7 @@ function animateSkipping(total) {
 
     function frameLoop(timestamp) {
         const progress = currentBounce / total;
-        const stepDuration = 260 * Math.pow(1 - progress, 2.5) + 35; // 대표님 시그니처 호흡 배정
+        const stepDuration = 260 * Math.pow(1 - progress, 2.5) + 35; // 대표님 시그니처 가속 리듬
         
         let progressInStep = (timestamp - stepStartTime) / stepDuration;
         if (progressInStep > 1) progressInStep = 1;
@@ -301,8 +278,8 @@ function animateSkipping(total) {
                 
                 currentStatus = "PRE_SPIN";
                 
-                // 정산 복귀 후 타이밍: 배경을 즉시 다시 대장간 배경으로 원복하여 까만 화면 영구 소멸
-                if (container) container.style.backgroundImage = "url('images/bg_roulette.png')"; 
+                // [근본 해결] 인게임 정산 후 자바스크립트가 배경을 "none"으로 날리던 코드를 영구 삭제. 
+                // 단순히 룰렛 레이어를 다시 켜는 것으로 마감하여 하위 인게임 배경과 상위 대장간 배경이 철저히 독립 유지됨.
                 if (rouletteScreen) rouletteScreen.style.display = 'flex';
                 updateAssetUI();
             }, 1800);
@@ -328,5 +305,4 @@ function createBounceEffect(x, y, count, color) {
     if (container) container.appendChild(rip);
 }
 
-// 스크립트 로드 즉시 강제 점등 구동
 initGameSettings();

@@ -9,17 +9,17 @@ const stones = [
 // [★대표님 지시] 돌 종류와 무관하게 완전히 무작위로 바뀔 게임 배경 이미지 리스트
 const gameBackgrounds = [
     "images/bg_stage_1.png", // 기본 강가
-    "images/bg_stage_2.png", // 신비로운 호수 (추가 예정 자산명)
-    "images/bg_stage_3.png", // 밤의 계곡 (추가 예정 자산명)
-    "images/bg_stage_4.png"  /* 대표님이 가지고 계신 추가 배경 파일명들을 여기에 넣으시면 됩니다 */
+    "images/bg_stage_2.png", // 신비로운 호수
+    "images/bg_stage_3.png", // 밤의 계곡
+    "images/bg_stage_4.png"  
 ];
 
 // 유저 자산 및 컬렉션 상태 데이터
 let playerHearts = 5;
 let playerSP = 0;
-let unlockedSkins = ["ordinary"]; // 유저가 뽑아서 해금한 스킨 리스트 (기본 돌만 보유 시작)
+let unlockedSkins = ["ordinary"]; 
 
-let selectedStone = stones[0]; // 최초 기본 돌 세팅
+let selectedStone = stones[0]; 
 let isSpinning = false;
 let startY = 0;
 let startTime = 0;
@@ -41,7 +41,6 @@ const spCountEl = document.getElementById('sp-count');
 const youtubeModal = document.getElementById('youtube-modal');
 const videoTimerEl = document.getElementById('video-timer');
 
-// [하트 가드레일] 최대치 5개 고정 수사권 방어
 function updateAssetUI() {
     heartsCountEl.innerText = playerHearts;
     spCountEl.innerText = playerSP.toLocaleString();
@@ -54,7 +53,6 @@ function updateAssetUI() {
     }
 }
 
-// 룰렛 가챠 구동 (성능 배율 제거, 오직 스킨 획득 도파민에 집중)
 function triggerWheel(e) {
     if (e) e.preventDefault();
     if (playerHearts <= 0) {
@@ -78,7 +76,6 @@ function triggerWheel(e) {
             selectedStone = current;
             wheelEl.style.transform = `rotate(0deg)`; 
             
-            // 신규 스킨 획득 시 팝업 텍스트 연출 전환
             if (!unlockedSkins.includes(selectedStone.id)) {
                 unlockedSkins.push(selectedStone.id);
                 stoneDisplayName.innerText = `🎉 신규 스킨! ${selectedStone.name}`;
@@ -86,7 +83,6 @@ function triggerWheel(e) {
                 stoneDisplayName.innerText = `${selectedStone.name} (보유 중)`;
             }
             
-            // 뽑힌 스킨 이미지를 인게임 돌 패널에 바인딩
             ingameStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
             
             document.getElementById('roulette-title').innerText = "SKIN READY!";
@@ -115,7 +111,7 @@ const handleMainBtn = (e) => {
         playerHearts--; 
         updateAssetUI();
 
-        // [★완공] 대표님 지시: 던지기 화면으로 넘어갈 때 돌과 상관없이 무작위 배경 선택 주입
+        // [★정밀 타격] 던지기 시작 시점: 무조건 인라인 스타일에 강제로 랜덤 게임 배경을 꽂아 넣습니다.
         const randomBg = gameBackgrounds[Math.floor(Math.random() * gameBackgrounds.length)];
         container.style.backgroundImage = `url('${randomBg}')`;
 
@@ -188,7 +184,6 @@ function launchStone(speed) {
     isPlaying = false;
     document.getElementById('swipe-guide').style.display = 'none';
     
-    // 순수한 유저의 피지컬 속도로만 최종 바운스 계산 (공평한 토크노믹스 방어)
     let totalBounces = Math.floor(speed * 10);
     message.innerText = "GOOOOAL!";
     if(totalBounces < 3) totalBounces = 3; 
@@ -196,25 +191,18 @@ function launchStone(speed) {
     animateSkipping(totalBounces);
 }
 
-// [★대표님 시그니처 템포 매핑] 토오옹통 -> 토옹통 -> 통통통통 다다닥 엔진
 function animateSkipping(total) {
-    const startYPosition = window.innerHeight * 0.8; // 시작점 (1/5 지점)
-    const horizonY = window.innerHeight * 0.35;       // 한계선 (3.5/5 지점)
+    const startYPosition = window.innerHeight * 0.8; 
+    const horizonY = window.innerHeight * 0.35;       
     const totalDistanceY = startYPosition - horizonY;
     
     let currentBounce = 0;
     let stepStartTime = performance.now();
 
-    // 첫 번째 포인트 즉시 생성
     createBounceEffect(window.innerWidth / 2, startYPosition, 1, selectedStone.rippleColor);
 
     function frameLoop(timestamp) {
-        // 현재 전체 바운스 진행도 (0.0 ~ 1.0)
         const progress = currentBounce / total;
-        
-        // [★핵심 수정: 대표님의 "토오옹통~통" 호흡 구현]
-        // 지수 함수와 거듭제곱을 결합하여, 초반 1~2회차는 380ms(엄청나게 길게 머무름)로 시작하고,
-        // 중반을 지나 후반부로 갈수록 35ms(초고속 다다닥)까지 박자가 극적으로 압축되도록 설계했습니다.
         const stepDuration = 380 * Math.pow(1 - progress, 2.5) + 35;
         
         let progressInStep = (timestamp - stepStartTime) / stepDuration;
@@ -222,20 +210,17 @@ function animateSkipping(total) {
 
         const totalProgress = Math.min((currentBounce + progressInStep) / total, 1);
 
-        // [원근감] 크기 변화 가속 곡선 (소실점 근처에서 순간 압축 축소)
         const scaleProgress = Math.pow(totalProgress, 2);
         const scale = 1 - (scaleProgress * 0.65); 
 
         const surfaceY = startYPosition - (totalDistanceY * Math.pow(totalProgress, 0.65));
         const currentX = window.innerWidth / 2;
 
-        // [포물선] 위아래 튕김 폭 감쇄 (박자가 빨라질수록 높이도 급격하게 바닥에 붙음)
         const maxJumpHeight = 140 * Math.pow(1 - totalProgress, 1.8); 
         const jumpOffset = Math.sin(progressInStep * Math.PI) * maxJumpHeight;
         
         const stoneRenderY = surfaceY - jumpOffset;
 
-        // GPU 실시간 좌표 투사
         ingameStoneEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
         ingameStoneEl.style.left = `${currentX}px`;
         ingameStoneEl.style.top = `${stoneRenderY}px`;
@@ -254,7 +239,6 @@ function animateSkipping(total) {
         if (currentBounce < total) {
             requestAnimationFrame(frameLoop);
         } else {
-            // 깔끔한 침몰 처리 마감
             ingameStoneEl.style.transition = "opacity 0.6s ease-out, top 0.6s ease-out";
             ingameStoneEl.style.top = `${surfaceY + 40}px`;
             ingameStoneEl.style.opacity = '0';
@@ -275,6 +259,9 @@ function animateSkipping(total) {
                 mainBtn.innerText = "SPIN WHEEL";
                 
                 currentStatus = "PRE_SPIN";
+                
+                // [★완공] 정산 후 루프 초기화 장치: 컨테이너의 배경을 다시 가챠용 배경으로 초기화합니다.
+                container.style.backgroundImage = "none"; 
                 rouletteScreen.style.display = 'flex';
                 updateAssetUI();
             }, 1800);
@@ -296,7 +283,6 @@ function createBounceEffect(x, y, count, color) {
     rip.className = 'ripple';
     rip.style.left = `${x}px`;
     rip.style.top = `${y}px`;
-    // 각 스킨의 전용 파동 색상 강제 입히기
     rip.style.borderColor = color;
     container.appendChild(rip);
 }

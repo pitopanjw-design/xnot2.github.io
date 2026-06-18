@@ -141,12 +141,7 @@ function triggerWheel(e) {
                 winnerEl.addEventListener('animationend', cleanPop);
             }
             
-            if (!unlockedSkins.includes(selectedStone.id)) {
-                unlockedSkins.push(selectedStone.id);
-                stoneDisplayName.innerText = `🎉 신규 스킨! ${selectedStone.name}`;
-            } else {
-                stoneDisplayName.innerText = `${selectedStone.name} (보유 중)`;
-            }
+            stoneDisplayName.innerText = `${selectedStone.name}`;
             
             if (ingameStoneEl) ingameStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
             

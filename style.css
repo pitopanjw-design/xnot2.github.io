@@ -90,7 +90,7 @@ body, html {
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
-    background: url('images/bg_roulette.webp') center/cover no-repeat !important; /* !important를 주어 JS의 엉뚱한 간섭을 원천 차단 */
+    background: url('images/roulette_wheel.webp') center/cover no-repeat !important; /* !important를 주어 JS의 엉뚱한 간섭을 원천 차단 */
     z-index: 9999; /* 인게임의 그 어떤 블랙아웃 레이어도 뚫고 올라오지 못하게 최상위 락 */
     display: flex; 
     flex-direction: column; 
@@ -102,7 +102,7 @@ body, html {
 #roulette-wheel { 
     width: 280px; 
     height: 280px; 
-    background-image: url('images/roulette_wheel.webp');
+    background-image: url('images/bg_roulette.webp');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

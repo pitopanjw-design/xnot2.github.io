@@ -21,6 +21,7 @@ let currentStatus = "PRE_SPIN";
 
 const rouletteScreen = document.getElementById('roulette-screen');
 const wheelEl = document.getElementById('roulette-wheel');
+const rouletteStoneEl = document.getElementById('roulette-stone');
 const stoneDisplayName = document.getElementById('stone-display-name');
 const stoneDesc = document.getElementById('stone-desc');
 const mainBtn = document.getElementById('main-action-btn');
@@ -37,6 +38,9 @@ const videoTimerEl = document.getElementById('video-timer');
 // [근본 해결] 첫 기동 시점 및 리셋 시점에 인게임 기본 스테이지 배경 클래스를 미리 주입하여 검은 화면 원천 차단
 function initGameSettings() {
     if (container) container.classList.add(gameBackgrounds[0]);
+    if (rouletteStoneEl && selectedStone) {
+        rouletteStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
+    }
     updateAssetUI();
 }
 
@@ -62,10 +66,17 @@ function triggerWheel(e) {
     isSpinning = true;
     let tick = 0;
     
+    if (rouletteStoneEl) {
+        rouletteStoneEl.classList.add('stone-spinning');
+    }
+    
     const timer = setInterval(() => {
         const current = stones[Math.floor(Math.random() * stones.length)];
         stoneDisplayName.innerText = current.name;
         stoneDesc.innerText = current.desc;
+        if (rouletteStoneEl) {
+            rouletteStoneEl.style.backgroundImage = `url('${current.image}')`;
+        }
         
         if (wheelEl) wheelEl.style.transform = `rotate(${tick * 45}deg)`;
         tick++;
@@ -74,6 +85,17 @@ function triggerWheel(e) {
             clearInterval(timer);
             selectedStone = current;
             if (wheelEl) wheelEl.style.transform = `rotate(0deg)`; 
+            
+            if (rouletteStoneEl) {
+                rouletteStoneEl.classList.remove('stone-spinning');
+                rouletteStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
+                rouletteStoneEl.classList.add('pop-effect');
+                const cleanPop = () => {
+                    rouletteStoneEl.classList.remove('pop-effect');
+                    rouletteStoneEl.removeEventListener('animationend', cleanPop);
+                };
+                rouletteStoneEl.addEventListener('animationend', cleanPop);
+            }
             
             if (!unlockedSkins.includes(selectedStone.id)) {
                 unlockedSkins.push(selectedStone.id);
@@ -119,11 +141,14 @@ const handleMainBtn = (e) => {
 
         rouletteScreen.style.display = 'none'; 
         
-        ingameStoneEl.style.left = '50%';
-        ingameStoneEl.style.top = '80%';
-        ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
-        ingameStoneEl.style.opacity = '1';
-        ingameStoneEl.style.display = 'block';
+        if (ingameStoneEl) {
+            ingameStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
+            ingameStoneEl.style.left = '50%';
+            ingameStoneEl.style.top = '80%';
+            ingameStoneEl.style.transform = 'translate(-50%, -50%) scale(1)';
+            ingameStoneEl.style.opacity = '1';
+            ingameStoneEl.style.display = 'block';
+        }
         
         document.getElementById('swipe-guide').style.display = 'block';
         scoreDisplay.innerText = "0 SKIPS";
@@ -261,8 +286,10 @@ function animateSkipping(total) {
             
             setTimeout(() => {
                 document.querySelectorAll('.bounce-point').forEach(p => p.remove());
-                ingameStoneEl.style.transition = "none"; 
-                ingameStoneEl.style.display = 'none';
+                if (ingameStoneEl) {
+                    ingameStoneEl.style.transition = "none"; 
+                    ingameStoneEl.style.display = 'none';
+                }
                 
                 stoneDisplayName.innerText = "돌 뽑기 터치!";
                 stoneDesc.innerText = "다음 기회를 위해 돌을 다시 뽑으세요.";
@@ -272,7 +299,11 @@ function animateSkipping(total) {
                 
                 // [근본 해결] 복귀할 때 인게임 스테이지 클래스를 청소하여 부모-자식 간의 렌더링 간섭을 소멸시킵니다.
                 container.className = ""; 
-                rouletteScreen.style.display = 'flex';
+                if (rouletteScreen) rouletteScreen.style.display = 'flex';
+                
+                if (rouletteStoneEl && selectedStone) {
+                    rouletteStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
+                }
                 
                 updateAssetUI();
             }, 1800);

@@ -21,7 +21,6 @@ let currentStatus = "PRE_SPIN";
 
 const rouletteScreen = document.getElementById('roulette-screen');
 const wheelEl = document.getElementById('roulette-wheel');
-const rouletteStoneEl = document.getElementById('roulette-stone');
 const stoneDisplayName = document.getElementById('stone-display-name');
 const stoneDesc = document.getElementById('stone-desc');
 const mainBtn = document.getElementById('main-action-btn');
@@ -38,10 +37,24 @@ const videoTimerEl = document.getElementById('video-timer');
 // [근본 해결] 첫 기동 시점 및 리셋 시점에 인게임 기본 스테이지 배경 클래스를 미리 주입하여 검은 화면 원천 차단
 function initGameSettings() {
     if (container) container.classList.add(gameBackgrounds[0]);
-    if (rouletteStoneEl && selectedStone) {
-        rouletteStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
-    }
+    createWheelStones();
     updateAssetUI();
+}
+
+// 4개의 구역 돌 엘리먼트를 동적으로 생성하는 함수 (상, 우, 하, 좌 순서)
+function createWheelStones() {
+    if (!wheelEl) return;
+    const existingStones = wheelEl.querySelectorAll('.wheel-stone');
+    existingStones.forEach(el => el.remove());
+    
+    const positions = ['pos-top', 'pos-right', 'pos-bottom', 'pos-left'];
+    stones.forEach((stone, index) => {
+        const stoneEl = document.createElement('div');
+        stoneEl.className = `wheel-stone ${positions[index]}`;
+        stoneEl.id = `wheel-stone-${stone.id}`;
+        stoneEl.style.backgroundImage = `url('${stone.image}')`;
+        wheelEl.appendChild(stoneEl);
+    });
 }
 
 function updateAssetUI() {
@@ -66,17 +79,32 @@ function triggerWheel(e) {
     isSpinning = true;
     let tick = 0;
     
-    if (rouletteStoneEl) {
-        rouletteStoneEl.classList.add('stone-spinning');
+    if (wheelEl) {
+        wheelEl.style.transition = "none";
     }
+    const stoneEls = wheelEl ? wheelEl.querySelectorAll('.wheel-stone') : [];
+    
+    // 이전에 남아있을 수 있는 효과들 초기화
+    stoneEls.forEach(el => {
+        el.classList.remove('highlight');
+        el.classList.remove('pop-effect');
+    });
     
     const timer = setInterval(() => {
-        const current = stones[Math.floor(Math.random() * stones.length)];
+        const randIndex = Math.floor(Math.random() * stones.length);
+        const current = stones[randIndex];
+        
         stoneDisplayName.innerText = current.name;
         stoneDesc.innerText = current.desc;
-        if (rouletteStoneEl) {
-            rouletteStoneEl.style.backgroundImage = `url('${current.image}')`;
-        }
+        
+        // 4개 구역 돌 하이라이트 분산 연출
+        stoneEls.forEach((el, idx) => {
+            if (idx === randIndex) {
+                el.classList.add('highlight');
+            } else {
+                el.classList.remove('highlight');
+            }
+        });
         
         if (wheelEl) wheelEl.style.transform = `rotate(${tick * 45}deg)`;
         tick++;
@@ -84,17 +112,32 @@ function triggerWheel(e) {
         if(tick > 12) {
             clearInterval(timer);
             selectedStone = current;
-            if (wheelEl) wheelEl.style.transform = `rotate(0deg)`; 
             
-            if (rouletteStoneEl) {
-                rouletteStoneEl.classList.remove('stone-spinning');
-                rouletteStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
-                rouletteStoneEl.classList.add('pop-effect');
+            // 물리 기반 룰렛 회전 정지 각도 연출 (선택된 돌이 12시 방향 정탑에 위치하도록)
+            const targetIndex = randIndex;
+            const finalAngle = 1080 - (targetIndex * 90); 
+            
+            if (wheelEl) {
+                wheelEl.style.transition = "transform 1.8s cubic-bezier(0.1, 0.8, 0.25, 1)";
+                wheelEl.style.transform = `rotate(${finalAngle}deg)`;
+            }
+            
+            // 모든 돌 하이라이트 일단 제거
+            stoneEls.forEach(el => {
+                el.classList.remove('highlight');
+                el.classList.remove('pop-effect');
+            });
+            
+            // 당첨 돌에 팝 바운스 이펙트 부여
+            const winnerEl = document.getElementById(`wheel-stone-${selectedStone.id}`);
+            if (winnerEl) {
+                winnerEl.classList.add('pop-effect');
                 const cleanPop = () => {
-                    rouletteStoneEl.classList.remove('pop-effect');
-                    rouletteStoneEl.removeEventListener('animationend', cleanPop);
+                    winnerEl.classList.remove('pop-effect');
+                    winnerEl.classList.add('highlight');
+                    winnerEl.removeEventListener('animationend', cleanPop);
                 };
-                rouletteStoneEl.addEventListener('animationend', cleanPop);
+                winnerEl.addEventListener('animationend', cleanPop);
             }
             
             if (!unlockedSkins.includes(selectedStone.id)) {
@@ -297,13 +340,20 @@ function animateSkipping(total) {
                 
                 currentStatus = "PRE_SPIN";
                 
+                // 복귀할 때 룰렛 바퀴의 물리 회전 각도를 0deg로 리셋하고 구역 돌들의 하이라이트 초기화
+                if (wheelEl) {
+                    wheelEl.style.transition = "none";
+                    wheelEl.style.transform = "rotate(0deg)";
+                    const stoneEls = wheelEl.querySelectorAll('.wheel-stone');
+                    stoneEls.forEach(el => {
+                        el.classList.remove('highlight');
+                        el.classList.remove('pop-effect');
+                    });
+                }
+                
                 // [근본 해결] 복귀할 때 인게임 스테이지 클래스를 청소하여 부모-자식 간의 렌더링 간섭을 소멸시킵니다.
                 container.className = ""; 
                 if (rouletteScreen) rouletteScreen.style.display = 'flex';
-                
-                if (rouletteStoneEl && selectedStone) {
-                    rouletteStoneEl.style.backgroundImage = `url('${selectedStone.image}')`;
-                }
                 
                 updateAssetUI();
             }, 1800);

@@ -35,7 +35,7 @@ body, html {
 #game-container.stage5 { background: url('images/bg_stage_5.webp') center/cover no-repeat; }
 
 /* 자산 정보 표시 */
-.asset-bar { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 200; pointer-events: none; }
+.asset-bar { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 20000; pointer-events: none; }
 .asset-box { background: rgba(15, 23, 42, 0.8); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
 #hearts-count { color: var(--danger); }
 #sp-count { color: var(--primary); }
@@ -95,17 +95,17 @@ body, html {
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: center; 
+    justify-content: space-evenly;
     box-sizing: border-box;
-    padding: 20px;
+    padding: 65px 20px 20px 20px;
 }
-#roulette-title { color: var(--primary); margin-top: 0; margin-bottom: 25px; text-align: center; padding: 0 20px; font-size: 22px; font-weight: bold; }
+#roulette-title { color: var(--primary); margin: 0; text-align: center; padding: 0 15px; font-size: 20px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
 .wheel-wrapper {
     position: relative;
-    width: 280px;
-    height: 280px;
-    margin-bottom: 25px;
+    width: 260px;
+    height: 260px;
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,25 +152,25 @@ body, html {
     backface-visibility: hidden;
 }
 
-/* 4개 방향별 안착 위치 및 기본 회전각(방사형) */
+/* 4개 방향별 안착 위치 오차 없는 영점 정렬 */
 .wheel-stone.pos-top {
-    top: 15%;
+    top: 18%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(0deg);
 }
 .wheel-stone.pos-right {
     top: 50%;
-    left: 85%;
+    left: 82%;
     transform: translate(-50%, -50%) rotate(90deg);
 }
 .wheel-stone.pos-bottom {
-    top: 85%;
+    top: 82%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(180deg);
 }
 .wheel-stone.pos-left {
     top: 50%;
-    left: 15%;
+    left: 18%;
     transform: translate(-50%, -50%) rotate(270deg);
 }
 
@@ -225,8 +225,8 @@ body, html {
     text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(222,255,154,0.5); 
     box-sizing: border-box;
 }
-#stone-desc { color: #94a3b8; font-size: 15px; margin-top: 0; margin-bottom: 25px; text-align: center; padding: 0 20px; min-height: 40px; }
-.action-btn { background: var(--primary); color: #0f172a; border: none; padding: 18px 60px; font-size: 22px; font-weight: bold; border-radius: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 0; -webkit-tap-highlight-color: transparent; }
+#stone-desc { color: #94a3b8; font-size: 14px; margin: 0; text-align: center; padding: 0 20px; min-height: 36px; display: flex; align-items: center; justify-content: center; }
+.action-btn { background: var(--primary); color: #0f172a; border: none; padding: 14px 50px; font-size: 20px; font-weight: bold; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin: 0; -webkit-tap-highlight-color: transparent; }
 
 #youtube-modal { position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
 .ad-title { color:#ef4444; margin-bottom: 10px; }

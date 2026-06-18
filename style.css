@@ -128,7 +128,7 @@ body, html {
     background-color: transparent !important;
     border: none !important;
     outline: none !important;
-    border-radius: 50%; 
+    border-radius: 50% !important; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -181,23 +181,23 @@ body, html {
 
 /* 4개 방향별 안착 위치 대각선 45도, 135도, 225도, 315도로 정밀 교체 */
 .wheel-stone.pos-top {
-    top: 21%;
-    left: 79%;
+    top: 29%;
+    left: 71%;
     transform: translate(-50%, -50%) rotate(45deg);
 }
 .wheel-stone.pos-right {
-    top: 79%;
-    left: 79%;
+    top: 71%;
+    left: 71%;
     transform: translate(-50%, -50%) rotate(135deg);
 }
 .wheel-stone.pos-bottom {
-    top: 79%;
-    left: 21%;
+    top: 71%;
+    left: 29%;
     transform: translate(-50%, -50%) rotate(225deg);
 }
 .wheel-stone.pos-left {
-    top: 21%;
-    left: 21%;
+    top: 29%;
+    left: 29%;
     transform: translate(-50%, -50%) rotate(315deg);
 }
 
@@ -240,7 +240,7 @@ body, html {
 
 .stone-info-container { 
     position: absolute;
-    top: 76%;
+    top: 71%;
     left: 50%;
     transform: translateX(-50%);
     display: flex; 
@@ -276,7 +276,7 @@ body, html {
 }
 .action-btn { 
     position: absolute;
-    bottom: 8%;
+    bottom: 5%;
     left: 50%;
     transform: translateX(-50%);
     background: var(--primary); 

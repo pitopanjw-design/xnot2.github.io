@@ -95,16 +95,18 @@ body, html {
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: space-between;
+    justify-content: center;
+    gap: 20px;
     box-sizing: border-box;
-    padding: 50px 20px 30px 20px;
+    padding: 40px 20px 30px 20px;
 }
 #roulette-title { color: var(--primary); margin: 0; text-align: center; padding: 0 15px; font-size: 20px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
 .wheel-wrapper {
     position: relative;
-    width: 260px;
-    height: 260px;
+    width: 310px;
+    height: 310px;
+    flex-shrink: 0;
     margin: auto 0;
     display: flex;
     align-items: center;
@@ -169,23 +171,23 @@ body, html {
 
 /* 4개 방향별 안착 위치 대각선 45도, 135도, 225도, 315도로 정밀 교체 */
 .wheel-stone.pos-top {
-    top: 32%;
-    left: 68%;
+    top: 24%;
+    left: 76%;
     transform: translate(-50%, -50%) rotate(45deg);
 }
 .wheel-stone.pos-right {
-    top: 68%;
-    left: 68%;
+    top: 76%;
+    left: 76%;
     transform: translate(-50%, -50%) rotate(135deg);
 }
 .wheel-stone.pos-bottom {
-    top: 68%;
-    left: 32%;
+    top: 76%;
+    left: 24%;
     transform: translate(-50%, -50%) rotate(225deg);
 }
 .wheel-stone.pos-left {
-    top: 32%;
-    left: 32%;
+    top: 24%;
+    left: 24%;
     transform: translate(-50%, -50%) rotate(315deg);
 }
 

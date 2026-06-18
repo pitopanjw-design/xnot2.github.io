@@ -167,7 +167,6 @@ body, html {
     transition: transform 0.3s ease, filter 0.3s ease, scale 0.3s ease;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)) grayscale(30%);
     transform-style: preserve-3d;
-    backface-visibility: hidden;
 }
 
 /* 4개 방향별 안착 위치 대각선 45도, 135도, 225도, 315도로 정밀 교체 */

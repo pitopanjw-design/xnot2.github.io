@@ -118,6 +118,7 @@ function triggerWheel(e) {
             const finalAngle = 1080 - (45 + targetIndex * 90); 
             
             if (wheelEl) {
+                void wheelEl.offsetWidth; // 브라우저 리플로우를 강제하여 transition 변경 시의 미세 튕김 및 레이아웃 바운스 방지
                 wheelEl.style.transition = "transform 1.8s cubic-bezier(0.1, 0.8, 0.25, 1)";
                 wheelEl.style.transform = `rotate(${finalAngle}deg)`;
             }
@@ -343,6 +344,7 @@ function animateSkipping(total) {
                 // 복귀할 때 룰렛 바퀴의 물리 회전 각도를 0deg로 리셋하고 구역 돌들의 하이라이트 초기화
                 if (wheelEl) {
                     wheelEl.style.transition = "none";
+                    void wheelEl.offsetWidth; // 브라우저 리플로우를 강제하여 0deg 리셋 시의 레이아웃 오차 방지
                     wheelEl.style.transform = "rotate(0deg)";
                     const stoneEls = wheelEl.querySelectorAll('.wheel-stone');
                     stoneEls.forEach(el => {

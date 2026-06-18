@@ -132,7 +132,29 @@ body, html {
     transform-style: preserve-3d;
     backface-visibility: hidden;
 }
-.pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ef4444; z-index: 1100; }
+.pointer {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 30px solid #ef4444;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)) drop-shadow(0 0 10px rgba(239,68,68,0.4));
+    z-index: 1100;
+}
+.pointer::after {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: -9px;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 30px solid #ff7878;
+    opacity: 0.6;
+}
 
 .wheel-stone {
     position: absolute;
@@ -150,26 +172,26 @@ body, html {
     backface-visibility: hidden;
 }
 
-/* 4개 방향별 안착 위치 바퀴 내측 25%/75%로 영점 보정 */
+/* 4개 방향별 안착 위치 대각선 45도, 135도, 225도, 315도로 정밀 교체 */
 .wheel-stone.pos-top {
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg);
+    top: 32%;
+    left: 68%;
+    transform: translate(-50%, -50%) rotate(45deg);
 }
 .wheel-stone.pos-right {
-    top: 50%;
-    left: 75%;
-    transform: translate(-50%, -50%) rotate(90deg);
+    top: 68%;
+    left: 68%;
+    transform: translate(-50%, -50%) rotate(135deg);
 }
 .wheel-stone.pos-bottom {
-    top: 75%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(180deg);
+    top: 68%;
+    left: 32%;
+    transform: translate(-50%, -50%) rotate(225deg);
 }
 .wheel-stone.pos-left {
-    top: 50%;
-    left: 25%;
-    transform: translate(-50%, -50%) rotate(270deg);
+    top: 32%;
+    left: 32%;
+    transform: translate(-50%, -50%) rotate(315deg);
 }
 
 /* 당첨 구역 하이라이트 및 스케일 업 */
@@ -177,31 +199,31 @@ body, html {
     filter: drop-shadow(0 0 15px rgba(222,255,154,0.9)) brightness(1.2) grayscale(0%);
     z-index: 1060;
 }
-.wheel-stone.pos-top.highlight { transform: translate(-50%, -50%) rotate(0deg) scale(1.25); }
-.wheel-stone.pos-right.highlight { transform: translate(-50%, -50%) rotate(90deg) scale(1.25); }
-.wheel-stone.pos-bottom.highlight { transform: translate(-50%, -50%) rotate(180deg) scale(1.25); }
-.wheel-stone.pos-left.highlight { transform: translate(-50%, -50%) rotate(270deg) scale(1.25); }
+.wheel-stone.pos-top.highlight { transform: translate(-50%, -50%) rotate(45deg) scale(1.25); }
+.wheel-stone.pos-right.highlight { transform: translate(-50%, -50%) rotate(135deg) scale(1.25); }
+.wheel-stone.pos-bottom.highlight { transform: translate(-50%, -50%) rotate(225deg) scale(1.25); }
+.wheel-stone.pos-left.highlight { transform: translate(-50%, -50%) rotate(315deg) scale(1.25); }
 
 /* 방향별 개별 팝 바운스 연출 */
 @keyframes stone-pop-top {
-    0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.8); opacity: 0.8; }
-    50% { transform: translate(-50%, -50%) rotate(0deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
-    100% { transform: translate(-50%, -50%) rotate(0deg) scale(1.25); opacity: 1; }
+    0% { transform: translate(-50%, -50%) rotate(45deg) scale(0.8); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) rotate(45deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
+    100% { transform: translate(-50%, -50%) rotate(45deg) scale(1.25); opacity: 1; }
 }
 @keyframes stone-pop-right {
-    0% { transform: translate(-50%, -50%) rotate(90deg) scale(0.8); opacity: 0.8; }
-    50% { transform: translate(-50%, -50%) rotate(90deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
-    100% { transform: translate(-50%, -50%) rotate(90deg) scale(1.25); opacity: 1; }
+    0% { transform: translate(-50%, -50%) rotate(135deg) scale(0.8); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) rotate(135deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
+    100% { transform: translate(-50%, -50%) rotate(135deg) scale(1.25); opacity: 1; }
 }
 @keyframes stone-pop-bottom {
-    0% { transform: translate(-50%, -50%) rotate(180deg) scale(0.8); opacity: 0.8; }
-    50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
-    100% { transform: translate(-50%, -50%) rotate(180deg) scale(1.25); opacity: 1; }
+    0% { transform: translate(-50%, -50%) rotate(225deg) scale(0.8); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) rotate(225deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
+    100% { transform: translate(-50%, -50%) rotate(225deg) scale(1.25); opacity: 1; }
 }
 @keyframes stone-pop-left {
-    0% { transform: translate(-50%, -50%) rotate(270deg) scale(0.8); opacity: 0.8; }
-    50% { transform: translate(-50%, -50%) rotate(270deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
-    100% { transform: translate(-50%, -50%) rotate(270deg) scale(1.25); opacity: 1; }
+    0% { transform: translate(-50%, -50%) rotate(315deg) scale(0.8); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) rotate(315deg) scale(1.55); filter: drop-shadow(0 0 20px rgba(222,255,154,1)) brightness(1.4); }
+    100% { transform: translate(-50%, -50%) rotate(315deg) scale(1.25); opacity: 1; }
 }
 
 .wheel-stone.pos-top.pop-effect { animation: stone-pop-top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }

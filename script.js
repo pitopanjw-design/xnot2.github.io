@@ -113,9 +113,9 @@ function triggerWheel(e) {
             clearInterval(timer);
             selectedStone = current;
             
-            // 물리 기반 룰렛 회전 정지 각도 연출 (선택된 돌이 12시 방향 정탑에 위치하도록)
+            // 물리 기반 룰렛 회전 정지 각도 연출 (선택된 대각선 돌이 12시 방향 정탑에 위치하도록 45도 보정 반영)
             const targetIndex = randIndex;
-            const finalAngle = 1080 - (targetIndex * 90); 
+            const finalAngle = 1080 - (45 + targetIndex * 90); 
             
             if (wheelEl) {
                 wheelEl.style.transition = "transform 1.8s cubic-bezier(0.1, 0.8, 0.25, 1)";

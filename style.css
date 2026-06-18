@@ -28,10 +28,11 @@ body, html {
     background-repeat: no-repeat;
 }
 
-#game-container.stage1 { background: url('images/bg_stage_1.png') center/cover no-repeat; }
-#game-container.stage2 { background: url('images/bg_stage_2.png') center/cover no-repeat; }
-#game-container.stage3 { background: url('images/bg_stage_3.png') center/cover no-repeat; }
-#game-container.stage4 { background: url('images/bg_stage_4.png') center/cover no-repeat; }
+#game-container.stage1 { background: url('images/bg_stage_1.webp') center/cover no-repeat; }
+#game-container.stage2 { background: url('images/bg_stage_2.webp') center/cover no-repeat; }
+#game-container.stage3 { background: url('images/bg_stage_3.webp') center/cover no-repeat; }
+#game-container.stage4 { background: url('images/bg_stage_4.webp') center/cover no-repeat; }
+#game-container.stage5 { background: url('images/bg_stage_5.webp') center/cover no-repeat; }
 
 /* 자산 정보 표시 */
 .asset-bar { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 200; pointer-events: none; }
@@ -89,7 +90,7 @@ body, html {
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
-    background: url('images/bg_roulette.png') center/cover no-repeat !important; 
+    background: url('images/bg_roulette.webp') center/cover no-repeat !important; 
     z-index: 9999; /* 그 어떤 인게임 레이어도 절대 뚫지 못하는 절대 장벽 */
     display: flex; 
     flex-direction: column; 
@@ -101,7 +102,7 @@ body, html {
 #roulette-wheel { 
     width: 280px; 
     height: 280px; 
-    background-image: url('images/roulette_wheel.png');
+    background-image: url('images/roulette_wheel.webp');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

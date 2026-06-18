@@ -1,12 +1,12 @@
 const stones = [
-    { id: "ordinary", name: "평범한 조약돌", image: "images/stone_ordinary.png", rippleColor: "rgba(255,255,255,0.8)", desc: "강가에서 흔히 볼 수 있는 친숙한 기본 조약돌" },
-    { id: "rare", name: "거친 현무암", image: "images/stone_rare.png", rippleColor: "rgba(0,191,255,0.9)", desc: "수면에 닿을 때마다 푸른 이온 스파크 파동이 터지는 돌" },
-    { id: "legendary", name: "슬레이트 판암", image: "images/stone_legendary.png", rippleColor: "rgba(239,68,68,0.9)", desc: "붉은 마그마 광용 파동을 일으키는 얇고 날카로운 암석" },
-    { id: "mythic", name: "XNOT 황금 운석", image: "images/stone_mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
+    { id: "ordinary", name: "평범한 조약돌", image: "images/stone-ordinary.png", rippleColor: "rgba(255,255,255,0.8)", desc: "강가에서 흔히 볼 수 있는 친숙한 기본 조약돌" },
+    { id: "rare", name: "거친 현무암", image: "images/stone-rare.png", rippleColor: "rgba(0,191,255,0.9)", desc: "수면에 닿을 때마다 푸른 이온 스파크 파동이 터지는 돌" },
+    { id: "legendary", name: "슬레이트 판암", image: "images/stone-legendary.png", rippleColor: "rgba(239,68,68,0.9)", desc: "붉은 마그마 광용 파동을 일으키는 얇고 날카로운 암석" },
+    { id: "mythic", name: "XNOT 황금 운석", image: "images/stone-mythic.png", rippleColor: "rgba(222,255,154,1)", desc: "신화급 외형! 수면을 타격할 때 시그니처 황금 파동이 폭발함" }
 ];
 
 // 랜덤 게임 배경화면 클래스 배열
-const gameBackgrounds = ["stage1", "stage2", "stage3", "stage4"];
+const gameBackgrounds = ["stage1", "stage2", "stage3", "stage4", "stage5"];
 
 let playerHearts = 5;
 let playerSP = 0;

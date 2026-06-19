@@ -131,9 +131,12 @@ body, html {
 }
 
 #roulette-wheel { 
-    width: 310px !important;  /* [교정] 가변 100% 대신 고정 정사각 규격으로 축 정렬 보장 */
-    height: 310px !important; /* [교정] 가변 100% 대신 고정 정사각 규격으로 축 정렬 보장 */
+    width: 308px !important;  /* [교정] 픽셀 밀림 방지를 위해 1px(양측 2px) 축소 */
+    height: 308px !important; /* [교정] 픽셀 밀림 방지를 위해 1px(양측 2px) 축소 */
+    margin: auto;             /* 완전한 상하좌우 대칭 정중앙 정렬 보장 */
     background: url('images/bg_roulette.webp') no-repeat center/cover !important;
+    background-size: cover !important;
+    background-position: center center !important;
     background-color: transparent !important;
     border: none !important;
     outline: none !important;

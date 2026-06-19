@@ -117,8 +117,8 @@ body, html {
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 320px;
-    height: 320px;
+    width: 300px;
+    height: 300px;
     z-index: 1000;
     border-radius: 50% !important;
     border: none !important;
@@ -129,8 +129,8 @@ body, html {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 300px !important;   /* 예시 크기 */
-    height: 300px !important;  /* 예시 크기 */
+    width: 100% !important;
+    height: 100% !important;
     transform: translate(-50%, -50%); /* 중심을 wrapper의 50%, 50% 지점으로 일치 */
     transform-origin: center center !important;
     z-index: 1;
@@ -159,10 +159,10 @@ body, html {
 
 .pointer {
     position: absolute;
-    top: 0;
+    top: 12px;
     left: 50%;
-    transform: translate(-50%, -100%);
-    z-index: 1200;
+    transform: translateX(-50%);
+    z-index: 12000;
 
     width: 0;
     height: 0;
@@ -337,9 +337,9 @@ body, html {
     position: absolute;
     top: 50%;
     left: 50%;
-    /* 테두리는 룰렛판보다 살짝 커야 감싸 안으므로 크기를 조절합니다. */
-    width: 320px !important;   
-    height: 320px !important;  
+    /* 테두리는 룰렛판보다 살짝 커야 감싸 안으므로 크기를 조절합니다. (원반 내측 가림 압착을 위해 298px로 축소) */
+    width: 298px !important;   
+    height: 298px !important;  
     /* 중심축을 룰렛판과 완벽히 일치시킵니다. */
     transform: translate(-50%, -50%); 
     pointer-events: none; /* 클릭 이벤트가 룰렛판으로 투과되도록 설정 */
@@ -347,6 +347,6 @@ body, html {
 
     box-sizing: border-box;
     border-radius: 50% !important;
-    border: 10px solid #cbd5e1;
-    box-shadow: inset 0 0 6px #ffffff, inset 0 0 14px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.5);
+    border: 11px solid #cbd5e1;
+    box-shadow: inset 0 0 8px #ffffff, inset 0 0 16px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.4);
 }

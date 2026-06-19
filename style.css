@@ -125,9 +125,7 @@ body, html {
     
     /* 부모 수준에서 원형을 칼같이 잘라내는 절대 장벽 */
     border-radius: 50% !important;
-    overflow: hidden !important;
     border: none !important;
-    clip-path: circle(50% at 50% 50%) !important;
 }
 
 #roulette-wheel { 
@@ -154,14 +152,15 @@ body, html {
     transform-origin: center center !important;
     backface-visibility: hidden;
     overflow: hidden !important;
+    clip-path: circle(50% at 50% 50%) !important;
     
     transition: transform 0.1s ease-out;
 }
 .pointer {
     position: absolute;
-    top: -25px;
+    top: 0;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -100%);
     width: 0;
     height: 0;
     border-left: 18px solid transparent;

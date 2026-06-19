@@ -332,10 +332,10 @@ body, html {
 
 .wheel-frame {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    width: 308px !important;
+    height: 308px !important;
+    margin: auto;
+    inset: 0;
     box-sizing: border-box;
     pointer-events: none;
     z-index: 1100;

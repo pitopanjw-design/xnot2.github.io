@@ -128,6 +128,7 @@ body, html {
     border-radius: 50% !important;
     overflow: hidden !important;
     border: none !important;
+    clip-path: circle(50% at 50% 50%) !important;
 }
 
 #roulette-wheel { 
@@ -148,9 +149,11 @@ body, html {
     
     /* 하드웨어 가속 및 회전축 고정 */
     will-change: transform;
+    transform: rotate(0deg);
     transform-origin: center center !important;
     backface-visibility: hidden;
     overflow: hidden !important;
+    clip-path: circle(50% at 50% 50%) !important;
     
     transition: transform 0.1s ease-out;
 }

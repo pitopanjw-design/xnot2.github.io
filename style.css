@@ -93,7 +93,7 @@ body, html {
     background: url('images/roulette_wheel.webp') center/cover no-repeat !important;
     z-index: 9999;
     box-sizing: border-box;
-    padding: 40px 20px 30px 20px;
+    padding: 0 20px;
 }
 #roulette-title { 
     position: absolute; 
@@ -110,13 +110,16 @@ body, html {
     width: 100%;
 }
 
-/* 1. 두 요소를 감싸는 부모 wrapper에 relative 기준점을 잡고, 
-   자식들이 중앙 정렬될 수 있도록 크기를 명확히 합니다. */
+/* 1. 두 요소를 감싸는 부모 wrapper에 absolute 기준점을 잡고, 
+   정중앙에 정렬하여 크기를 명확히 합니다. */
 .wheel-wrapper {
-    position: relative;
-    width: 320px;   /* 기존에 설정된 룰렛 판의 크기에 맞추거나 적절히 조절 */
-    height: 320px;  
-    margin: 0 auto; /* 수평 중앙 정렬 */
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 320px;
+    z-index: 1000;
     border-radius: 50% !important;
     border: none !important;
 }
@@ -156,10 +159,10 @@ body, html {
 
 .pointer {
     position: absolute;
-    top: 0; /* 보통 룰렛의 12시 방향 꼭대기에 위치하므로 */
+    top: 0;
     left: 50%;
-    transform: translateX(-50%);
-    z-index: 4;
+    transform: translate(-50%, -100%);
+    z-index: 1200;
 
     width: 0;
     height: 0;

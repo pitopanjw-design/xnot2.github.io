@@ -121,6 +121,10 @@ body, html {
     align-items: center;
     justify-content: center;
     filter: drop-shadow(0 0 25px rgba(222,255,154,0.3));
+    
+    /* [교정] 투명 배경 잔상 박멸을 위한 부모 마스크 락 선언 */
+    border-radius: 50% !important;
+    overflow: hidden !important;
 }
 #roulette-wheel { 
     width: 100%; 
@@ -137,9 +141,14 @@ body, html {
     position: relative; 
     box-shadow: none !important;
     -webkit-tap-highlight-color: transparent; 
+    
+    /* [교정] 하드웨어 가속 및 정중앙 회전축 강제 고정 */
     will-change: transform;
-    transition: transform 0.1s ease-out;
+    transform-origin: center center !important;
+    backface-visibility: hidden;
     overflow: hidden !important;
+    
+    transition: transform 0.1s ease-out;
 }
 .pointer {
     position: absolute;

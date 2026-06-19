@@ -111,27 +111,25 @@ body, html {
 }
 
 .wheel-wrapper {
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 310px;
-    height: 310px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    /* [교정] 결함을 유발하던 filter: drop-shadow를 완전히 삭제 */
-    
-    /* 부모 수준에서 원형을 칼같이 잘라내는 절대 장벽 */
+    position: relative;
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
     border-radius: 50% !important;
     border: none !important;
 }
 
 #roulette-wheel { 
-    width: 308px !important;  /* [교정] 픽셀 밀림 방지를 위해 1px(양측 2px) 축소 */
-    height: 308px !important; /* [교정] 픽셀 밀림 방지를 위해 1px(양측 2px) 축소 */
-    margin: auto;             /* 완전한 상하좌우 대칭 정중앙 정렬 보장 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 300px !important;
+    height: 300px !important;
+    z-index: 1;
+
     background: url('images/bg_roulette.webp') no-repeat center/cover !important;
     background-size: cover !important;
     background-position: center center !important;
@@ -142,7 +140,6 @@ body, html {
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    position: relative; 
     box-shadow: none !important;
     -webkit-tap-highlight-color: transparent; 
     
@@ -160,7 +157,7 @@ body, html {
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translate(-50%, -100%);
+    transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 18px solid transparent;
@@ -332,10 +329,11 @@ body, html {
 
 .wheel-frame {
     position: absolute;
-    width: 308px !important;
-    height: 308px !important;
-    margin: auto;
-    inset: 0;
+    top: 50%;
+    left: 50%;
+    width: 320px !important;
+    height: 320px !important;
+    transform: translate(-50%, -50%);
     box-sizing: border-box;
     pointer-events: none;
     z-index: 1100;

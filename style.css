@@ -90,11 +90,10 @@ body, html {
 #roulette-screen { 
     position: absolute; 
     inset: 0; 
-    background-color: #0f172a !important; /* [교정] 불분명한 이미지 배경 대신 확실한 단색 베이스로 잔상 차단 */
+    background: url('images/roulette_wheel.webp') center/cover no-repeat !important;
     z-index: 9999;
     box-sizing: border-box;
     padding: 40px 20px 30px 20px;
-    overflow: hidden;
 }
 #roulette-title { 
     position: absolute; 
@@ -134,8 +133,7 @@ body, html {
 #roulette-wheel { 
     width: 310px !important;  /* [교정] 가변 100% 대신 고정 정사각 규격으로 축 정렬 보장 */
     height: 310px !important; /* [교정] 가변 100% 대신 고정 정사각 규격으로 축 정렬 보장 */
-    background: url('images/bg_roulette.webp') center/contain no-repeat !important;
-    background-size: 100% 100% !important;
+    background: url('images/bg_roulette.webp') no-repeat center/cover !important;
     background-color: transparent !important;
     border: none !important;
     outline: none !important;
